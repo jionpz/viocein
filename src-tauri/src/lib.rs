@@ -141,6 +141,7 @@ fn should_restore_main_window_on_reopen(_has_visible_windows: bool) -> bool {
     true
 }
 
+#[cfg(target_os = "macos")]
 fn restore_main_window(app: &tauri::AppHandle) {
     if let Some(window) = app.get_webview_window("main") {
         let _ = window.unminimize();
