@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "El reconocimiento de voz agotó el tiempo de espera. Inténtalo de nuevo.",
-    "stt_invalid_key": "El acceso de voz en la nube falló. Inicia sesión de nuevo o revisa tu clave API.",
+    "stt_invalid_key": "Falló la autenticación del servicio de voz. Comprueba la clave API configurada.",
     "stt_failed": "El reconocimiento de voz falló. {{details}}",
-    "stt_quota_exceeded": "Se agotó la cuota de reconocimiento de voz en la nube. Actualiza a Pro o cambia al modo BYOK.",
+    "stt_quota_exceeded": "Se superó la cuota de reconocimiento de voz. Contacta con tu administrador.",
     "stt_no_speech_detected": "No se detectó voz. Inténtalo de nuevo.",
     "output_fallback_clipboard": "La salida de texto falló. El resultado se copió al portapapeles. {{details}}",
     "output_wayland_unsupported": "La escritura directa no está disponible en esta sesión de Wayland. El resultado se copió al portapapeles.",
     "accessibility_required": "Falta el permiso de accesibilidad. El resultado se copió al portapapeles.",
     "output_streaming_partial": "La inserción en streaming se detuvo antes de tiempo. Se conservó el texto insertado. {{details}}",
     "llm_failed": "Falló el pulido con IA. Se emitió el texto original en su lugar. {{details}}",
-    "llm_quota_exceeded": "Se agotó la cuota de IA en la nube. Actualiza a Pro o cambia al modo BYOK.",
+    "llm_quota_exceeded": "Se superó la cuota de IA. Contacta con tu administrador.",
     "output_wayland_clipboard_copy_only": "Copied to clipboard. Paste manually on Wayland."
   },
   "home": {
@@ -52,9 +52,7 @@
     "aiPolish": "Pulido con IA",
     "enabled": "Activado",
     "disabled": "Desactivado",
-    "outputMode": "Modo de salida",
-    "wordsRemaining": "Palabras restantes",
-    "wordsReset": "Se reinicia el {{date}}"
+    "outputMode": "Modo de salida"
   },
   "onboarding": {
     "speakToWrite": "Habla para escribir — convierte tu voz en texto pulido en tiempo real",
@@ -99,10 +97,6 @@
       "setupComplete": "Configuración completa",
       "getStarted": "Comenzar"
     },
-    "account": {
-      "signIn": "Iniciar sesión",
-      "signUp": "Registrarse"
-    },
     "done": {
       "title": "¡Todo listo!",
       "capsuleOnDesktop": "Cápsula en el escritorio",
@@ -136,10 +130,6 @@
         "needed": "Necesario",
         "later": "Luego"
       }
-    },
-    "mode": {
-      "cloud": "Nube",
-      "recommended": "Recomendado"
     },
     "layout": {
       "skip": "Omitir",
@@ -183,8 +173,6 @@
       "openMainWindow": "Abrir ventana principal",
       "settings": "Configuración",
       "history": "Historial",
-      "account": "Cuenta",
-      "upgrade": "Mejorar",
       "exit": "Salir"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "No se pudo exportar el diccionario"
   },
   "scenes": {
-    "signInToBrowse": "Inicia sesión para explorar los paquetes de escenas.",
     "promptTemplate": "Plantilla de prompt",
     "copyPrompt": "Copiar prompt",
     "copied": "Copiado",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "Create a local scene to save a reusable AI polish prompt.",
     "newScene": "New scene",
     "builtInScenes": "Built-in Scenes",
-    "cloudPacks": "Cloud Packs",
     "failedToSave": "Failed to save scene.",
     "export": "Export",
     "import": "Import",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "No se pudo crear la corrección",
     "needsBrowserAccess": "requiere acceso al navegador",
     "providers": {
-      "managed_cloud": "Cloud",
       "byok": "BYOK",
       "local": "Local"
     },
@@ -475,26 +460,6 @@
       "partial": "Partial result",
       "fallback": "Fallback output",
       "clipboardFallback": "Copied to clipboard"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "STT en la nube",
-      "sttDetail": "Reconocimiento de voz premium",
-      "llmTitle": "LLM en la nube",
-      "llmDetail": "Pulido de texto con IA",
-      "backupTitle": "Respaldo en la nube",
-      "backupDetail": "Sincroniza tu configuración e historial",
-      "scenesTitle": "Cloud Scene Packs",
-      "scenesDetail": "Curated prompt templates and future scene sync",
-      "zeroConfigTitle": "Sin configuración",
-      "zeroConfigDetail": "No se necesitan claves API"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "Respaldo exitoso",
-      "subscriptionFail": "Error al cargar la suscripción"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "Limitado por el búfer de audio local seguro de la aplicación.",
       "unknownUpstream": "Se desconoce el límite del servidor personalizado; se usa un valor prudente.",
       "unknownProvider": "Este proveedor aún no se reconoce; se usa un límite seguro.",
-      "productSafety": "Un límite prudente de la aplicación para este proveedor de streaming.",
-      "managedCapability": "Configurado automáticamente para viocein Cloud.",
-      "encoderFallback": "El codificador de audio gestionado no estaba disponible; esta sesión usó el límite WAV local más corto.",
-      "managedFallback": "La capacidad Cloud no está disponible o está obsoleta; se usa el límite seguro de 30 segundos."
+      "productSafety": "Un límite prudente de la aplicación para este proveedor de streaming."
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "Aliyun Qwen3 Realtime ASR",
-      "volcengineDoubao": "Volcengine Doubao Realtime ASR",
-      "glmAsr": "GLM-ASR (Zhipu)",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "SiliconFlow",
       "appleSpeech": "Apple Speech (Local)",
-      "customWhisper": "Local / Custom Whisper",
-      "cloud": "viocein Cloud"
+      "customWhisper": "Local / Custom Whisper"
     },
     "llm": {
-      "zhipu": "Zhipu",
-      "deepseek": "DeepSeek",
-      "siliconflow": "SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "Doubao (Volcengine)",
-      "qwen": "Qwen",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (Local)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein Cloud"
+      "company": "Puerta de enlace LLM de empresa",
+      "ollama": "Ollama (Local)"
     }
   }
 }

@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "Speech recognition timed out. Please try again.",
-    "stt_invalid_key": "Cloud speech access failed. Please sign in again or check your API key.",
+    "stt_invalid_key": "Speech service authentication failed. Check the configured API key.",
     "stt_failed": "Speech recognition failed. {{details}}",
-    "stt_quota_exceeded": "Cloud speech quota exceeded. Upgrade to Pro or switch to BYOK mode.",
+    "stt_quota_exceeded": "Speech recognition quota was exceeded. Contact your administrator.",
     "stt_no_speech_detected": "No speech detected. Please try again.",
     "output_fallback_clipboard": "Text output failed. The result was copied to clipboard instead. {{details}}",
     "output_wayland_unsupported": "Direct typing is unavailable in this Wayland session. The result was copied to the clipboard.",
     "accessibility_required": "Accessibility permission is missing. The result was copied to clipboard.",
     "output_streaming_partial": "Streaming insert stopped early. The inserted text was kept. {{details}}",
     "llm_failed": "AI polishing failed. The original text was output instead. {{details}}",
-    "llm_quota_exceeded": "Cloud AI quota exceeded. Upgrade to Pro or switch to BYOK mode.",
+    "llm_quota_exceeded": "AI quota was exceeded. Contact your administrator.",
     "output_wayland_clipboard_copy_only": "Copied to clipboard. Paste manually on Wayland."
   },
   "home": {
@@ -46,8 +46,6 @@
     "description": "Use {{hotkey}} to start voice recording. Your speech will be transcribed and optionally polished by AI.",
     "totalRecordings": "Total Recordings",
     "today": "Today",
-    "wordsRemaining": "Words remaining",
-    "wordsReset": "Resets {{date}}",
     "currentConfig": "Current Configuration",
     "sttProvider": "STT Provider",
     "llmProvider": "LLM Provider",
@@ -99,10 +97,6 @@
       "setupComplete": "Setup Complete",
       "getStarted": "Get Started"
     },
-    "account": {
-      "signIn": "Sign In",
-      "signUp": "Sign Up"
-    },
     "done": {
       "title": "You're all set!",
       "capsuleOnDesktop": "Capsule on Desktop",
@@ -136,10 +130,6 @@
         "needed": "Needed",
         "later": "Later"
       }
-    },
-    "mode": {
-      "cloud": "Cloud",
-      "recommended": "Recommended"
     },
     "layout": {
       "skip": "Skip",
@@ -183,8 +173,6 @@
       "openMainWindow": "Open Main Window",
       "settings": "Settings",
       "history": "History",
-      "account": "Account",
-      "upgrade": "Upgrade",
       "exit": "Exit"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "Failed to export dictionary"
   },
   "scenes": {
-    "signInToBrowse": "Sign in to browse scene packs.",
     "promptTemplate": "Prompt Template",
     "copyPrompt": "Copy prompt",
     "copied": "Copied",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "Create a local scene to save a reusable AI polish prompt.",
     "newScene": "New scene",
     "builtInScenes": "Built-in Scenes",
-    "cloudPacks": "Cloud Packs",
     "failedToSave": "Failed to save scene.",
     "export": "Export",
     "import": "Import",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "Failed to create correction",
     "needsBrowserAccess": "needs browser access",
     "providers": {
-      "managed_cloud": "Cloud",
       "byok": "BYOK",
       "local": "Local"
     },
@@ -475,26 +460,6 @@
       "partial": "Partial result",
       "fallback": "Fallback output",
       "clipboardFallback": "Copied to clipboard"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "Cloud STT",
-      "sttDetail": "Premium speech recognition",
-      "llmTitle": "Cloud LLM",
-      "llmDetail": "AI text polishing",
-      "backupTitle": "Cloud Backup",
-      "backupDetail": "Sync your settings and history",
-      "scenesTitle": "Cloud Scene Packs",
-      "scenesDetail": "Curated prompt templates and future scene sync",
-      "zeroConfigTitle": "Zero Configuration",
-      "zeroConfigDetail": "No API keys needed"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "Backup successful",
-      "subscriptionFail": "Failed to load subscription"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "Limited by the app’s safe local audio buffer.",
       "unknownUpstream": "The custom server’s limit is unknown; a conservative default is used.",
       "unknownProvider": "This provider is not yet recognized; a safe fallback is used.",
-      "productSafety": "A conservative app limit for this streaming provider.",
-      "managedCapability": "Set automatically for viocein Cloud.",
-      "encoderFallback": "The managed audio encoder was unavailable, so this session used the shorter local WAV-safe limit.",
-      "managedFallback": "Cloud capability is unavailable or stale, so the safe 30-second limit is used."
+      "productSafety": "A conservative app limit for this streaming provider."
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "Aliyun Qwen3 Realtime ASR",
-      "volcengineDoubao": "Volcengine Doubao Realtime ASR",
-      "glmAsr": "GLM-ASR (Zhipu)",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "SiliconFlow",
       "appleSpeech": "Apple Speech (Local)",
-      "customWhisper": "Local / Custom Whisper",
-      "cloud": "viocein Cloud"
+      "customWhisper": "Local / Custom Whisper"
     },
     "llm": {
-      "zhipu": "Zhipu",
-      "deepseek": "DeepSeek",
-      "siliconflow": "SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "Doubao (Volcengine)",
-      "qwen": "Qwen",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (Local)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein Cloud"
+      "company": "Company LLM Gateway",
+      "ollama": "Ollama (Local)"
     }
   }
 }

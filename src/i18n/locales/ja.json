@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "音声認識がタイムアウトしました。もう一度お試しください。",
-    "stt_invalid_key": "クラウド音声アクセスに失敗しました。再度サインインするか、APIキーを確認してください。",
+    "stt_invalid_key": "音声サービスの認証に失敗しました。設定した API キーを確認してください。",
     "stt_failed": "音声認識に失敗しました。{{details}}",
-    "stt_quota_exceeded": "クラウド音声認識の利用枠を超えました。Proにアップグレードするか、BYOKモードに切り替えてください。",
+    "stt_quota_exceeded": "音声認識の利用上限に達しました。管理者にお問い合わせください。",
     "stt_no_speech_detected": "音声が検出されませんでした。もう一度お試しください。",
     "output_fallback_clipboard": "テキスト出力に失敗しました。代わりに結果をクリップボードにコピーしました。{{details}}",
     "output_wayland_unsupported": "現在のWaylandセッションでは直接入力できません。結果をクリップボードにコピーしました。",
     "accessibility_required": "アクセシビリティ権限がありません。結果をクリップボードにコピーしました。",
     "output_streaming_partial": "ストリーミング挿入が途中で停止しました。挿入済みのテキストは保持されました。{{details}}",
     "llm_failed": "AIによる整形に失敗しました。代わりに元のテキストを出力しました。{{details}}",
-    "llm_quota_exceeded": "クラウドAIの利用枠を超えました。Proにアップグレードするか、BYOKモードに切り替えてください。",
+    "llm_quota_exceeded": "AI の利用上限に達しました。管理者にお問い合わせください。",
     "output_wayland_clipboard_copy_only": "Copied to clipboard. Paste manually on Wayland."
   },
   "home": {
@@ -52,9 +52,7 @@
     "aiPolish": "AI整形",
     "enabled": "有効",
     "disabled": "無効",
-    "outputMode": "出力モード",
-    "wordsRemaining": "残り words",
-    "wordsReset": "{{date}} にリセット"
+    "outputMode": "出力モード"
   },
   "onboarding": {
     "speakToWrite": "話して書く — 音声をリアルタイムで整形されたテキストに変換します",
@@ -99,10 +97,6 @@
       "setupComplete": "セットアップ完了",
       "getStarted": "始める"
     },
-    "account": {
-      "signIn": "サインイン",
-      "signUp": "サインアップ"
-    },
     "done": {
       "title": "準備が完了しました！",
       "capsuleOnDesktop": "デスクトップのカプセル",
@@ -136,10 +130,6 @@
         "needed": "必要",
         "later": "後で"
       }
-    },
-    "mode": {
-      "cloud": "クラウド",
-      "recommended": "おすすめ"
     },
     "layout": {
       "skip": "スキップ",
@@ -183,8 +173,6 @@
       "openMainWindow": "メインウィンドウを開く",
       "settings": "設定",
       "history": "履歴",
-      "account": "アカウント",
-      "upgrade": "アップグレード",
       "exit": "終了"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "辞書のエクスポートに失敗しました"
   },
   "scenes": {
-    "signInToBrowse": "シーンパックを閲覧するにはサインインしてください。",
     "promptTemplate": "プロンプトテンプレート",
     "copyPrompt": "プロンプトをコピー",
     "copied": "コピーしました",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "Create a local scene to save a reusable AI polish prompt.",
     "newScene": "New scene",
     "builtInScenes": "Built-in Scenes",
-    "cloudPacks": "Cloud Packs",
     "failedToSave": "Failed to save scene.",
     "export": "Export",
     "import": "Import",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "修正ルールの作成に失敗しました",
     "needsBrowserAccess": "ブラウザアクセスが必要",
     "providers": {
-      "managed_cloud": "Cloud",
       "byok": "BYOK",
       "local": "Local"
     },
@@ -475,26 +460,6 @@
       "partial": "Partial result",
       "fallback": "Fallback output",
       "clipboardFallback": "Copied to clipboard"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "クラウドSTT",
-      "sttDetail": "プレミアム音声認識",
-      "llmTitle": "クラウドLLM",
-      "llmDetail": "AIテキスト整形",
-      "backupTitle": "クラウドバックアップ",
-      "backupDetail": "設定と履歴を同期",
-      "scenesTitle": "Cloud Scene Packs",
-      "scenesDetail": "Curated prompt templates and future scene sync",
-      "zeroConfigTitle": "設定不要",
-      "zeroConfigDetail": "APIキー不要"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "バックアップに成功しました",
-      "subscriptionFail": "サブスクリプションの読み込みに失敗しました"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "アプリの安全なローカル音声バッファによる制限です。",
       "unknownUpstream": "カスタムサーバーの上限が不明なため、安全な既定値を使用します。",
       "unknownProvider": "未認識のプロバイダーのため、安全な上限を使用します。",
-      "productSafety": "ストリーミングプロバイダー向けの安全なアプリ上限です。",
-      "managedCapability": "viocein Cloud に合わせて自動設定されています。",
-      "encoderFallback": "管理対象の音声エンコーダーを利用できなかったため、この録音には短いローカル WAV 安全上限を使用しました。",
-      "managedFallback": "クラウド機能情報がないか古いため、安全な 30 秒上限を使用します。"
+      "productSafety": "ストリーミングプロバイダー向けの安全なアプリ上限です。"
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "Aliyun Qwen3 Realtime ASR",
-      "volcengineDoubao": "Volcengine Doubao Realtime ASR",
-      "glmAsr": "GLM-ASR (Zhipu)",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "SiliconFlow",
       "appleSpeech": "Apple Speech (Local)",
-      "customWhisper": "Local / Custom Whisper",
-      "cloud": "viocein Cloud"
+      "customWhisper": "Local / Custom Whisper"
     },
     "llm": {
-      "zhipu": "Zhipu",
-      "deepseek": "DeepSeek",
-      "siliconflow": "SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "Doubao (Volcengine)",
-      "qwen": "Qwen",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (ローカル)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein Cloud"
+      "company": "社内 LLM ゲートウェイ",
+      "ollama": "Ollama (ローカル)"
     }
   }
 }

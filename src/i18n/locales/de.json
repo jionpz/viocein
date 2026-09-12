@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "Die Spracherkennung ist abgelaufen. Bitte versuchen Sie es erneut.",
-    "stt_invalid_key": "Der Cloud-Sprachzugriff ist fehlgeschlagen. Melden Sie sich erneut an oder prüfen Sie Ihren API-Schlüssel.",
+    "stt_invalid_key": "Die Authentifizierung des Sprachdienstes ist fehlgeschlagen. Prüfen Sie den konfigurierten API-Schlüssel.",
     "stt_failed": "Die Spracherkennung ist fehlgeschlagen. {{details}}",
-    "stt_quota_exceeded": "Das Kontingent für Cloud-Spracherkennung ist aufgebraucht. Wechseln Sie zu Pro oder in den BYOK-Modus.",
+    "stt_quota_exceeded": "Das Spracherkennungskontingent wurde überschritten. Wenden Sie sich an Ihre Administration.",
     "stt_no_speech_detected": "Keine Sprache erkannt. Bitte versuchen Sie es erneut.",
     "output_fallback_clipboard": "Die Textausgabe ist fehlgeschlagen. Das Ergebnis wurde stattdessen in die Zwischenablage kopiert. {{details}}",
     "output_wayland_unsupported": "Die direkte Eingabe ist in dieser Wayland-Sitzung nicht verfügbar. Das Ergebnis wurde in die Zwischenablage kopiert.",
     "accessibility_required": "Die Bedienungshilfe-Berechtigung fehlt. Das Ergebnis wurde in die Zwischenablage kopiert.",
     "output_streaming_partial": "Streaming-Einfügen wurde vorzeitig beendet. Der eingefügte Text wurde beibehalten. {{details}}",
     "llm_failed": "Die KI-Glättung ist fehlgeschlagen. Stattdessen wurde der Originaltext ausgegeben. {{details}}",
-    "llm_quota_exceeded": "Das Cloud-KI-Kontingent ist aufgebraucht. Wechseln Sie zu Pro oder in den BYOK-Modus.",
+    "llm_quota_exceeded": "Das KI-Kontingent wurde überschritten. Wenden Sie sich an Ihre Administration.",
     "output_wayland_clipboard_copy_only": "Copied to clipboard. Paste manually on Wayland."
   },
   "home": {
@@ -52,9 +52,7 @@
     "aiPolish": "KI-Glättung",
     "enabled": "Aktiviert",
     "disabled": "Deaktiviert",
-    "outputMode": "Ausgabemodus",
-    "wordsRemaining": "Verbleibende Wörter",
-    "wordsReset": "Wird am {{date}} zurückgesetzt"
+    "outputMode": "Ausgabemodus"
   },
   "onboarding": {
     "speakToWrite": "Sprechen Sie, um zu schreiben — verwandeln Sie Ihre Stimme in Echtzeit in geglätteten Text",
@@ -99,10 +97,6 @@
       "setupComplete": "Einrichtung abgeschlossen",
       "getStarted": "Loslegen"
     },
-    "account": {
-      "signIn": "Anmelden",
-      "signUp": "Registrieren"
-    },
     "done": {
       "title": "Sie sind bereit!",
       "capsuleOnDesktop": "Kapsel auf dem Desktop",
@@ -136,10 +130,6 @@
         "needed": "Nötig",
         "later": "Später"
       }
-    },
-    "mode": {
-      "cloud": "Cloud",
-      "recommended": "Empfohlen"
     },
     "layout": {
       "skip": "Überspringen",
@@ -183,8 +173,6 @@
       "openMainWindow": "Hauptfenster öffnen",
       "settings": "Einstellungen",
       "history": "Verlauf",
-      "account": "Konto",
-      "upgrade": "Upgrade",
       "exit": "Beenden"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "Wörterbuch konnte nicht exportiert werden"
   },
   "scenes": {
-    "signInToBrowse": "Melden Sie sich an, um Szenen-Pakete zu durchsuchen.",
     "promptTemplate": "Prompt-Vorlage",
     "copyPrompt": "Prompt kopieren",
     "copied": "Kopiert",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "Create a local scene to save a reusable AI polish prompt.",
     "newScene": "New scene",
     "builtInScenes": "Built-in Scenes",
-    "cloudPacks": "Cloud Packs",
     "failedToSave": "Failed to save scene.",
     "export": "Export",
     "import": "Import",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "Korrektur konnte nicht erstellt werden",
     "needsBrowserAccess": "Browserzugriff nötig",
     "providers": {
-      "managed_cloud": "Cloud",
       "byok": "BYOK",
       "local": "Local"
     },
@@ -475,26 +460,6 @@
       "partial": "Partial result",
       "fallback": "Fallback output",
       "clipboardFallback": "Copied to clipboard"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "Cloud-STT",
-      "sttDetail": "Premium-Spracherkennung",
-      "llmTitle": "Cloud-LLM",
-      "llmDetail": "KI-Textglättung",
-      "backupTitle": "Cloud-Backup",
-      "backupDetail": "Synchronisieren Sie Ihre Einstellungen und Ihren Verlauf",
-      "scenesTitle": "Cloud Scene Packs",
-      "scenesDetail": "Curated prompt templates and future scene sync",
-      "zeroConfigTitle": "Keine Konfiguration",
-      "zeroConfigDetail": "Keine API-Schlüssel nötig"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "Sicherung erfolgreich",
-      "subscriptionFail": "Abonnement konnte nicht geladen werden"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "Begrenzt durch den sicheren lokalen Audiopuffer der App.",
       "unknownUpstream": "Das Limit des eigenen Servers ist unbekannt; ein sicherer Standardwert wird verwendet.",
       "unknownProvider": "Dieser Anbieter ist noch unbekannt; ein sicheres Limit wird verwendet.",
-      "productSafety": "Ein vorsichtiges App-Limit für diesen Streaming-Anbieter.",
-      "managedCapability": "Automatisch für viocein Cloud festgelegt.",
-      "encoderFallback": "Der verwaltete Audio-Encoder war nicht verfügbar; für diese Aufnahme galt das kürzere lokale WAV-Sicherheitslimit.",
-      "managedFallback": "Cloud-Funktionsdaten fehlen oder sind veraltet; daher gilt das sichere 30-Sekunden-Limit."
+      "productSafety": "Ein vorsichtiges App-Limit für diesen Streaming-Anbieter."
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "Aliyun Qwen3 Realtime ASR",
-      "volcengineDoubao": "Volcengine Doubao Realtime ASR",
-      "glmAsr": "GLM-ASR (Zhipu)",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "SiliconFlow",
       "appleSpeech": "Apple Speech (Local)",
-      "customWhisper": "Local / Custom Whisper",
-      "cloud": "viocein Cloud"
+      "customWhisper": "Local / Custom Whisper"
     },
     "llm": {
-      "zhipu": "Zhipu",
-      "deepseek": "DeepSeek",
-      "siliconflow": "SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "Doubao (Volcengine)",
-      "qwen": "Qwen",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (Local)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein Cloud"
+      "company": "Unternehmens-LLM-Gateway",
+      "ollama": "Ollama (Local)"
     }
   }
 }

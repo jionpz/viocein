@@ -285,7 +285,7 @@ export interface SttProviderDiagnosticIssue {
 
 export interface SttProviderDiagnostics {
   provider: string
-  kind: 'localCompatible' | 'builtinLocal' | 'byokRemote' | 'cloudManaged' | 'unknown'
+  kind: 'localCompatible' | 'builtinLocal' | 'disabledRemote' | 'unknown'
   endpoint: string | null
   model: string | null
   requiresApiKey: boolean
@@ -299,14 +299,12 @@ export async function getSttProviderDiagnostics(
   provider: string,
   customBaseUrl?: string,
   customModel?: string,
-  providerRegion?: string,
 ): Promise<SttProviderDiagnostics> {
   return invoke('get_stt_provider_diagnostics', {
     apiKey,
     provider,
     customBaseUrl,
     customModel,
-    providerRegion,
   })
 }
 
@@ -316,16 +314,12 @@ export async function testSttConnection(
   provider: string,
   customBaseUrl?: string,
   customModel?: string,
-  volcengineResourceId?: string,
-  providerRegion?: string,
 ): Promise<boolean> {
   return invoke('test_stt_connection', {
     apiKey,
     provider,
     customBaseUrl,
     customModel,
-    volcengineResourceId,
-    providerRegion,
   })
 }
 
@@ -344,16 +338,12 @@ export async function benchSttConnection(
   provider: string,
   customBaseUrl?: string,
   customModel?: string,
-  volcengineResourceId?: string,
-  providerRegion?: string,
 ): Promise<number> {
   return invoke('bench_stt_connection', {
     apiKey,
     provider,
     customBaseUrl,
     customModel,
-    volcengineResourceId,
-    providerRegion,
   })
 }
 

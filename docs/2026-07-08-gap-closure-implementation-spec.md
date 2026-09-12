@@ -1,7 +1,7 @@
 # OpenTypeless 本期差异补齐 Spec
 
 Date: 2026-07-08
-Repo: `/Users/bytedance/个人项目/opentypeless`
+Repo: `tover0314-w/opentypeless`（上游）
 Status: reviewed; Slice A implemented and verified; Slice B Ask hotkey recording lifecycle implemented and verified
 
 ## 1. 人话结论

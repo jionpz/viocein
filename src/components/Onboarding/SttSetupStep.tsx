@@ -11,7 +11,7 @@ export function SttSetupStep() {
   const updateConfig = useAppStore((s) => s.updateConfig)
   const sttTestStatus = useAppStore((s) => s.sttTestStatus)
   const setSttTestStatus = useAppStore((s) => s.setSttTestStatus)
-  const fallbackProvider = ONBOARDING_STT_PROVIDERS[0]?.value ?? 'deepgram'
+  const fallbackProvider = ONBOARDING_STT_PROVIDERS[0]?.value ?? CUSTOM_WHISPER_PROVIDER
   const isCustomWhisper = config.stt_provider === CUSTOM_WHISPER_PROVIDER
   const selectedProvider = isCustomWhisper
     ? CUSTOM_WHISPER_PROVIDER

@@ -1,20 +1,19 @@
 # Ask Anything Reliability Design Spec
 
 Date: 2026-06-29
-Status: implemented; automated release checks passed on 2026-06-30; post-release platform smoke test still required
-Scope: OpenTypeless desktop Ask Anything + talkmore cloud proxy
+Status: implemented；2026-09-13 按内部本地优先版范围改写（移除云端代理与计费相关内容）
+Scope: viocein 桌面端 Ask Anything（本地 STT + 公司 / 本地 LLM）
 
 ## Executive Summary
 
-Ask Anything 不能只修一个超时或弹窗问题。它是一条跨桌面端、麦克风、STT、LLM、云端计费、结果窗口的链路。发布前必须保证每个失败点都有明确的用户反馈，并且失败时不会继续调用后续付费阶段。
+Ask Anything 不能只修一个超时或弹窗问题。它是一条跨桌面端、麦克风、STT、LLM、结果窗口的链路。每个失败点都必须有明确的用户反馈，并且失败时不得继续调用后续阶段。
 
 当前根因判断：
 
 1. 结果弹窗丢失是真问题。快捷键路径在 Rust 里打开 Ask 窗口后立即发 `ask:result`，如果前端监听还没挂上，事件会丢，用户会看到胶囊完成但没有结果弹窗内容。
 2. 无声音长时间 thinking 是真问题。当前 Ask STT finalize 最长等 `120s`，没有语音或音频流无法结束时，用户会长时间卡在 thinking。
-3. STT、LLM、云端 quota、网络错误必须原样返回给用户。不能把 STT quota/auth/service error 覆盖成 `No speech detected`。
-4. 空语音必须在桌面端止住：没有有效 transcript 时不能调用 `/api/proxy/ask`，因此不能产生 Ask LLM 计费。
-5. 云端已有部分计费保护：AppSumo cloud words 模式下，`/api/proxy/stt` 空文本会 release reservation，`/api/proxy/ask` 只有被调用并成功回答后才 settle。但桌面端仍必须阻止空语音进入 ask 阶段。
+3. STT、LLM、网络错误必须原样返回给用户。不能把 STT auth/service error 覆盖成 `No speech detected`。
+4. 空语音必须在桌面端止住：没有有效 transcript 时不得调用 LLM。
 
 ## User Contract
 
@@ -40,53 +39,34 @@ Ask Anything 不能只修一个超时或弹窗问题。它是一条跨桌面端�
 7. Hotkey handler opens/focuses the `ask` window and delivers the result.
 8. `src/components/AskPanel/AskPanel.tsx` renders answer-only popup content.
 
-### Cloud STT Flow
+### LLM Flow
 
-1. Desktop cloud STT uses the session token as bearer token.
-2. Cloud STT request includes operation metadata:
-   - `operationId`
-   - `stageKey = <operationId>:stt`
-   - `requestType`
-   - `clientVersion`
-3. talkmore `/api/proxy/stt` authenticates, reserves quota, calls Groq STT.
-4. If STT provider fails, reservation is released and an error is returned.
-5. In AppSumo cloud words mode, empty transcript releases reservation.
-6. In legacy dual-meter mode, STT quota is adjusted to actual parsed duration after a successful STT call.
-
-### Cloud Ask LLM Flow
-
-1. Desktop calls `/api/proxy/ask` only after a non-empty validated transcript exists.
-2. Request includes operation metadata:
-   - `operationId`
-   - `stageKey = <operationId>:ask`
-   - `requestType = ask_anything`
-   - `clientVersion`
-3. talkmore reserves ask stage quota before calling OpenRouter.
-4. On OpenRouter failure, reservation is released.
-5. On success, quota settles using question + answer cloud words and LLM token metadata.
+1. Desktop calls the configured LLM only after a non-empty validated transcript exists.
+2. The provider is either the company OpenAI-compatible gateway (`company`) or a loopback Ollama instance (`ollama`）。
+3. Before any request is built, the base URL is re-validated against `src-tauri/src/egress.rs`；不合规的地址直接拒绝，不会发出请求。
 
 ## Failure Matrix
 
-| Stage       | Failure                                        | Required user feedback                                                 | Continue to next stage? | Billing requirement                                          |
-| ----------- | ---------------------------------------------- | ---------------------------------------------------------------------- | ----------------------- | ------------------------------------------------------------ |
-| Start       | Ask already processing                         | Ignore duplicate hotkey                                                | No                      | No new billing                                               |
-| Config      | Config load fails                              | `Could not load settings. Please retry.`                               | No                      | No billing                                                   |
-| Auth        | Cloud selected but no session token            | `Sign in to use Cloud Ask, or switch to BYOK.`                         | No                      | No billing                                                   |
-| STT config  | Provider requires key but key missing          | `Configure speech recognition before using Ask.`                       | No                      | No billing                                                   |
-| STT connect | Provider connect fails                         | Provider error text, sanitized                                         | No                      | No billing                                                   |
-| Audio       | No input device                                | `Microphone unavailable. Check your input device.`                     | No                      | No billing                                                   |
-| Audio       | Permission denied                              | `Microphone permission is required.`                                   | No                      | No billing                                                   |
-| Recording   | Send audio fails                               | STT error text, sanitized                                              | No                      | Release any reservation                                      |
-| STT         | Provider returns auth/quota/service error      | Exact mapped error: auth, quota, or service                            | No                      | Release reservation on server error                          |
-| STT         | Empty transcript                               | `No speech detected. Please try again.`                                | No                      | No Ask LLM billing; cloud words STT releases in AppSumo path |
-| STT         | Finalize timeout with no transcript            | `No speech detected. Please try again.`                                | No                      | No Ask LLM billing                                           |
-| STT         | Finalize timeout after final transcript exists | Continue with collected final transcript                               | Yes                     | Normal billing                                               |
-| Transcript  | Over 500 chars                                 | `Question is too long.`                                                | No                      | No Ask LLM billing                                           |
-| LLM config  | No BYOK LLM and no cloud token                 | `Sign in or configure an LLM provider.`                                | No                      | No LLM billing                                               |
-| LLM cloud   | Quota exceeded                                 | `Cloud words used up. Please switch to BYOK mode or wait until reset.` | No                      | Release failed reservation                                   |
-| LLM cloud   | OpenRouter/service error                       | `Ask service error. Please try again.`                                 | No                      | Release failed reservation                                   |
-| Popup       | Native result event is missed                  | Frontend fetches pending result once on mount                          | N/A                     | No extra billing                                             |
-| Popup       | Native error event is missed                   | Frontend fetches pending error once on mount                           | N/A                     | No extra billing                                             |
+| Stage       | Failure                                        | Required user feedback                                   | Continue to next stage? |
+| ----------- | ---------------------------------------------- | -------------------------------------------------------- | ----------------------- |
+| Start       | Ask already processing                         | Ignore duplicate hotkey                                  | No                      |
+| Config      | Config load fails                              | `Could not load settings. Please retry.`                 | No                      |
+| STT config  | Provider requires key but key missing          | `Configure speech recognition before using Ask.`         | No                      |
+| STT config  | Base URL is not loopback                       | `Local STT must point at localhost / 127.0.0.1 / [::1]`  | No                      |
+| STT connect | Provider connect fails                         | Provider error text, sanitized                           | No                      |
+| Audio       | No input device                                | `Microphone unavailable. Check your input device.`       | No                      |
+| Audio       | Permission denied                              | `Microphone permission is required.`                     | No                      |
+| Recording   | Send audio fails                               | STT error text, sanitized                                | No                      |
+| STT         | Provider returns auth/service error            | Exact mapped error: auth or service                      | No                      |
+| STT         | Empty transcript                               | `No speech detected. Please try again.`                  | No                      |
+| STT         | Finalize timeout with no transcript            | `No speech detected. Please try again.`                  | No                      |
+| STT         | Finalize timeout after final transcript exists | Continue with collected final transcript                 | Yes                     |
+| Transcript  | Over 500 chars                                 | `Question is too long.`                                  | No                      |
+| LLM config  | No usable LLM configuration                    | `Configure an LLM provider.`                             | No                      |
+| LLM config  | Gateway URL fails egress validation            | Config error text from `egress.rs`                       | No                      |
+| LLM         | Provider/service error                         | `Ask service error. Please try again.`                   | No                      |
+| Popup       | Native result event is missed                  | Frontend fetches pending result once on mount            | N/A                     |
+| Popup       | Native error event is missed                   | Frontend fetches pending error once on mount             | N/A                     |
 
 ## Error Handling Requirements
 
@@ -110,42 +90,21 @@ Rules:
 8. Empty transcript must never call `answer_question`.
 9. Error strings shown to users must be sanitized and bounded.
 
-## Billing Requirements
+## Hard Rules
 
-Ask Anything has two billable phases in cloud mode:
-
-1. STT phase: speech to text.
-2. Ask phase: LLM answer.
-
-Hard rules:
-
-1. No valid transcript means no `/api/proxy/ask` request.
-2. STT start/connect/audio failures must not call LLM.
-3. STT provider auth/quota/service failures must not call LLM.
-4. Empty transcript must not call LLM.
-5. `question` validation must run before cloud ask reservation.
-6. Cloud ask output stays capped at `ASK_OUTPUT_TOKEN_LIMIT = 80`.
-7. talkmore AppSumo cloud words path must release reservations on provider failure.
-8. talkmore AppSumo cloud words path must release STT reservation on empty transcript.
-9. talkmore ask path must settle LLM tokens and provider/model only after success.
-10. Repeated popup retries must not re-call STT or LLM.
+1. STT start/connect/audio failures must not call LLM.
+2. STT provider auth/service failures must not call LLM.
+3. Empty transcript must not call LLM.
+4. `question` validation must run before the LLM request.
+5. Ask output stays capped at `ASK_OUTPUT_TOKEN_LIMIT = 80`.
+6. Repeated popup retries must not re-call STT or LLM.
 
 ## Current Code Evidence
 
-Desktop:
-
-1. `src-tauri/src/commands/ask.rs` validates empty questions before LLM.
-2. `src-tauri/src/commands/ask.rs` currently waits too long for STT finalize in released builds and needs a shorter bounded wait.
-3. `src-tauri/src/hotkey.rs` currently emits result/error immediately after showing the Ask window; this can lose events.
-4. `src/components/AskPanel/AskPanel.tsx` renders non-embedded popup as result/error-only, but needs pending-message recovery for missed native events.
-
-Cloud:
-
-1. `talkmore/src/app/api/proxy/stt/route.ts` rejects missing auth before paid STT API calls.
-2. `talkmore/src/app/api/proxy/stt/route.ts` releases AppSumo cloud reservation when STT returns empty text.
-3. `talkmore/src/app/api/proxy/ask/route.ts` caps output at `80` tokens.
-4. `talkmore/src/app/api/proxy/ask/route.ts` releases reservation when OpenRouter fails.
-5. `talkmore/src/lib/cloud-quota.ts` records cloud STT billable seconds and LLM tokens during settlement.
+1. `src-tauri/src/commands/ask.rs` validates empty questions before calling LLM.
+2. `src-tauri/src/commands/ask.rs` bounds the STT finalize wait.
+3. `src-tauri/src/hotkey.rs` stores the result/error before showing the Ask window, and the frontend also polls `take_pending_ask_message` as a fallback.
+4. `src/components/AskPanel/AskPanel.tsx` renders non-embedded popup as result/error-only and recovers pending messages when a native event is missed.
 
 ## Required Implementation Tasks
 
@@ -206,63 +165,35 @@ npm test -- --run src/components/AskPanel/__tests__/AskPanel.test.tsx
 Files:
 
 1. `src-tauri/src/commands/ask.rs`
-2. `src-tauri/src/stt/cloud.rs`
-3. `src-tauri/src/stt/config.rs`
-4. `src/lib/i18n` locale files if Ask-specific localized errors are added
+2. `src-tauri/src/stt/config.rs`
+3. `src/i18n/locales/*.json` if Ask-specific localized errors are added
 
 Acceptance:
 
-1. Missing cloud session has a cloud-specific message, not generic API-key copy.
-2. Microphone permission/device errors become user-readable messages.
-3. STT quota/auth/network/service errors remain visible and are not replaced by no-speech.
-4. LLM quota/auth/network/service errors remain visible.
+1. Microphone permission/device errors become user-readable messages.
+2. STT auth/network/service errors remain visible and are not replaced by no-speech.
+3. LLM auth/network/service errors remain visible.
+4. Egress policy rejections surface as a configuration error, not a generic network failure.
 5. Errors are short enough for the Ask popup.
 
-### Task 4: Cloud Billing Regression Tests
+## Manual Verification Gate
 
-Files:
+Before an internal build is handed out, verify all rows below:
 
-1. `talkmore/src/app/api/proxy/stt/route.ts`
-2. `talkmore/src/app/api/proxy/ask/route.ts`
-3. Existing or new talkmore API tests
-
-Acceptance:
-
-1. Empty AppSumo STT response releases cloud reservation.
-2. STT provider error releases cloud reservation.
-3. Ask provider error releases cloud reservation.
-4. Successful Ask settles cloud words and LLM tokens.
-5. Ask endpoint rejects empty question before reservation.
-
-## Manual Release Gate
-
-Before release, verify all rows below:
-
-| Platform | Case                                    | Expected result                        |
-| -------- | --------------------------------------- | -------------------------------------- |
-| Windows  | Press Ask, say nothing, stop            | Error popup appears; no LLM call       |
-| Windows  | Press Ask, speak one question, stop     | Answer-only popup appears              |
-| Windows  | Disable/deny mic                        | Error popup appears                    |
-| Windows  | Cloud quota exhausted test account      | Quota error popup appears              |
-| macOS    | Press Ask, say nothing, stop            | Error popup appears; no LLM call       |
-| macOS    | Press Ask, speak one question, stop     | Answer-only popup appears              |
-| macOS    | Ask window was not loaded before result | Pending result still appears           |
-| Linux    | Press Ask, speak one question, stop     | Answer-only popup appears              |
-| Cloud    | Empty transcript path                   | STT reservation released; no ask stage |
-| Cloud    | STT success + Ask fail                  | STT settled; ask reservation released  |
+| Platform | Case                                    | Expected result                  |
+| -------- | --------------------------------------- | -------------------------------- |
+| Windows  | Press Ask, say nothing, stop            | Error popup appears; no LLM call |
+| Windows  | Press Ask, speak one question, stop     | Answer-only popup appears        |
+| Windows  | Disable/deny mic                        | Error popup appears              |
+| macOS    | Press Ask, say nothing, stop            | Error popup appears; no LLM call |
+| macOS    | Press Ask, speak one question, stop     | Answer-only popup appears        |
+| macOS    | Ask window was not loaded before result | Pending result still appears     |
+| Linux    | Press Ask, speak one question, stop     | Answer-only popup appears        |
 
 ## Release Decision
 
-This feature is release-ready for CI packaging only when:
+Ask Anything is ready for an internal build only when:
 
 1. Unit tests for pending popup and no-speech pass.
 2. Desktop build passes.
-3. talkmore build passes.
-4. Cloud quota tests or direct deployment logs confirm no empty-speech LLM billing.
-5. No new release is published from partial local changes.
-
-Post-release smoke validation must still cover:
-
-1. Windows manual Ask tests pass.
-2. macOS manual Ask tests pass.
-3. Published artifacts install, sign, and launch on target platforms.
+3. No request is issued to a destination outside the egress allowlist.

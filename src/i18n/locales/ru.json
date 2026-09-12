@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "Время распознавания речи истекло. Попробуйте еще раз.",
-    "stt_invalid_key": "Доступ к облачной речи не удался. Войдите снова или проверьте API-ключ.",
+    "stt_invalid_key": "Не удалось пройти проверку подлинности голосового сервиса. Проверьте настроенный ключ API.",
     "stt_failed": "Распознавание речи не удалось. {{details}}",
-    "stt_quota_exceeded": "Квота облачного распознавания речи исчерпана. Обновитесь до Pro или переключитесь в режим BYOK.",
+    "stt_quota_exceeded": "Квота распознавания речи исчерпана. Обратитесь к администратору.",
     "stt_no_speech_detected": "Речь не обнаружена. Попробуйте еще раз.",
     "output_fallback_clipboard": "Не удалось вывести текст. Результат скопирован в буфер обмена. {{details}}",
     "output_wayland_unsupported": "Прямой ввод недоступен в текущем сеансе Wayland. Результат скопирован в буфер обмена.",
     "accessibility_required": "Нет разрешения на универсальный доступ. Результат скопирован в буфер обмена.",
     "output_streaming_partial": "Потоковая вставка остановилась раньше времени. Вставленный текст сохранен. {{details}}",
     "llm_failed": "ИИ-обработка не удалась. Вместо нее выведен исходный текст. {{details}}",
-    "llm_quota_exceeded": "Квота облачного ИИ исчерпана. Обновитесь до Pro или переключитесь в режим BYOK.",
+    "llm_quota_exceeded": "Квота ИИ исчерпана. Обратитесь к администратору.",
     "output_wayland_clipboard_copy_only": "Copied to clipboard. Paste manually on Wayland."
   },
   "home": {
@@ -52,9 +52,7 @@
     "aiPolish": "Обработка ИИ",
     "enabled": "Включено",
     "disabled": "Отключено",
-    "outputMode": "Режим вывода",
-    "wordsRemaining": "Осталось слов",
-    "wordsReset": "Сброс {{date}}"
+    "outputMode": "Режим вывода"
   },
   "onboarding": {
     "speakToWrite": "Говорите, чтобы писать — превращайте голос в обработанный текст в реальном времени",
@@ -99,10 +97,6 @@
       "setupComplete": "Настройка завершена",
       "getStarted": "Начать"
     },
-    "account": {
-      "signIn": "Войти",
-      "signUp": "Регистрация"
-    },
     "done": {
       "title": "Всё готово!",
       "capsuleOnDesktop": "Капсула на рабочем столе",
@@ -136,10 +130,6 @@
         "needed": "Нужно",
         "later": "Позже"
       }
-    },
-    "mode": {
-      "cloud": "Облако",
-      "recommended": "Рекомендуется"
     },
     "layout": {
       "skip": "Пропустить",
@@ -183,8 +173,6 @@
       "openMainWindow": "Открыть главное окно",
       "settings": "Настройки",
       "history": "История",
-      "account": "Аккаунт",
-      "upgrade": "Обновить",
       "exit": "Выход"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "Не удалось экспортировать словарь"
   },
   "scenes": {
-    "signInToBrowse": "Войдите, чтобы просмотреть наборы сцен.",
     "promptTemplate": "Шаблон промпта",
     "copyPrompt": "Копировать промпт",
     "copied": "Скопировано",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "Create a local scene to save a reusable AI polish prompt.",
     "newScene": "New scene",
     "builtInScenes": "Built-in Scenes",
-    "cloudPacks": "Cloud Packs",
     "failedToSave": "Failed to save scene.",
     "export": "Export",
     "import": "Import",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "Не удалось создать исправление",
     "needsBrowserAccess": "нужен доступ к браузеру",
     "providers": {
-      "managed_cloud": "Cloud",
       "byok": "BYOK",
       "local": "Local"
     },
@@ -475,26 +460,6 @@
       "partial": "Partial result",
       "fallback": "Fallback output",
       "clipboardFallback": "Copied to clipboard"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "Облачный STT",
-      "sttDetail": "Премиальное распознавание речи",
-      "llmTitle": "Облачный LLM",
-      "llmDetail": "Обработка текста ИИ",
-      "backupTitle": "Облачное резервное копирование",
-      "backupDetail": "Синхронизация настроек и истории",
-      "scenesTitle": "Cloud Scene Packs",
-      "scenesDetail": "Curated prompt templates and future scene sync",
-      "zeroConfigTitle": "Без настройки",
-      "zeroConfigDetail": "API-ключи не нужны"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "Резервная копия создана",
-      "subscriptionFail": "Не удалось загрузить подписку"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "Ограничено безопасным локальным аудиобуфером приложения.",
       "unknownUpstream": "Лимит пользовательского сервера неизвестен; используется безопасное значение.",
       "unknownProvider": "Провайдер пока не распознан; используется безопасное ограничение.",
-      "productSafety": "Безопасное ограничение приложения для потокового провайдера.",
-      "managedCapability": "Установлено автоматически для viocein Cloud.",
-      "encoderFallback": "Управляемый аудиокодер был недоступен; для этого сеанса применён более короткий локальный WAV-лимит.",
-      "managedFallback": "Данные возможностей Cloud недоступны или устарели; используется безопасный лимит 30 секунд."
+      "productSafety": "Безопасное ограничение приложения для потокового провайдера."
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "Aliyun Qwen3 Realtime ASR",
-      "volcengineDoubao": "Volcengine Doubao Realtime ASR",
-      "glmAsr": "GLM-ASR (Zhipu)",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "SiliconFlow",
       "appleSpeech": "Apple Speech (Local)",
-      "customWhisper": "Local / Custom Whisper",
-      "cloud": "viocein Cloud"
+      "customWhisper": "Local / Custom Whisper"
     },
     "llm": {
-      "zhipu": "Zhipu",
-      "deepseek": "DeepSeek",
-      "siliconflow": "SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "Doubao (Volcengine)",
-      "qwen": "Qwen",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (Локальный)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein Cloud"
+      "company": "Корпоративный LLM-шлюз",
+      "ollama": "Ollama (Локальный)"
     }
   }
 }

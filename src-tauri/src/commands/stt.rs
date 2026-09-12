@@ -168,7 +168,6 @@ pub fn get_stt_provider_diagnostics(
     provider: String,
     custom_base_url: Option<String>,
     custom_model: Option<String>,
-    _provider_region: Option<String>,
 ) -> Result<SttProviderDiagnostics, String> {
     let resolved_api_key = if provider == stt::config::CUSTOM_WHISPER_PROVIDER {
         resolve_config_secret(&api_key, "stt", &provider, &SystemCredentialVault)
@@ -245,15 +244,11 @@ async fn test_custom_whisper(
 }
 
 #[tauri::command]
-// Keep explicit IPC fields so older desktop callers remain wire-compatible.
-#[allow(clippy::too_many_arguments)]
 pub async fn test_stt_connection(
     api_key: String,
     provider: String,
     custom_base_url: Option<String>,
     custom_model: Option<String>,
-    _volcengine_resource_id: Option<String>,
-    _provider_region: Option<String>,
     client: tauri::State<'_, reqwest::Client>,
 ) -> Result<bool, String> {
     if provider.is_empty() {
@@ -279,15 +274,11 @@ pub async fn test_stt_connection(
 }
 
 #[tauri::command]
-// Keep explicit IPC fields so older desktop callers remain wire-compatible.
-#[allow(clippy::too_many_arguments)]
 pub async fn bench_stt_connection(
     api_key: String,
     provider: String,
     custom_base_url: Option<String>,
     custom_model: Option<String>,
-    _volcengine_resource_id: Option<String>,
-    _provider_region: Option<String>,
     client: tauri::State<'_, reqwest::Client>,
 ) -> Result<u32, String> {
     if provider.is_empty() {

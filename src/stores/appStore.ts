@@ -15,7 +15,6 @@ export type VoiceMode = 'dictate' | 'ask' | 'translate'
 
 export type SttProvider = 'apple-speech' | 'custom-whisper'
 
-export type AliyunQwenRegion = 'china-mainland' | 'international'
 export type LlmProvider = 'company' | 'ollama'
 export type OutputMode = 'keyboard' | 'clipboard'
 export type PasteShortcut = 'ctrlV' | 'ctrlShiftV' | 'shiftInsert'
@@ -170,8 +169,6 @@ export interface AppConfig {
   stt_custom_preset: 'speaches' | 'custom'
   stt_custom_base_url: string
   stt_custom_model: string
-  stt_volcengine_resource_id: string
-  stt_aliyun_qwen_region: AliyunQwenRegion
   stt_language: string
   llm_provider: LlmProvider
   llm_api_key: string
@@ -208,7 +205,6 @@ export interface AppConfig {
   recording_limit_mode: 'auto' | 'custom'
   custom_recording_limit_seconds: number
   max_recording_seconds: number
-  managed_stt_capability_state?: unknown
   history_enabled: boolean
   history_retention_days: number
   history_max_entries: number
@@ -700,8 +696,6 @@ const defaultConfig: AppConfig = {
   stt_custom_preset: 'speaches',
   stt_custom_base_url: 'http://localhost:8000/v1',
   stt_custom_model: 'Systran/faster-whisper-large-v3',
-  stt_volcengine_resource_id: 'volc.seedasr.sauc.duration',
-  stt_aliyun_qwen_region: 'china-mainland',
   stt_language: 'multi',
   llm_provider: 'company',
   llm_api_key: '',

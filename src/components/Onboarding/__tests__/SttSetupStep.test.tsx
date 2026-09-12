@@ -4,7 +4,7 @@ import { SttSetupStep } from '../SttSetupStep'
 
 const mockStore = {
   config: {
-    stt_provider: 'deepgram',
+    stt_provider: 'custom-whisper',
     stt_api_key: '',
     stt_custom_api_key: '',
     stt_custom_base_url: 'http://localhost:8000/v1',
@@ -26,7 +26,6 @@ vi.mock('react-i18next', () => ({
         'onboarding.stt.connectionOk': 'OK',
         'onboarding.stt.connectionFail': 'Failed',
         'onboarding.stt.customWhisperConfigured': 'Custom Whisper',
-        'providers.stt.deepgram': 'Deepgram',
         'providers.stt.customWhisper': 'Custom Whisper',
       })[key] ?? key,
   }),
@@ -42,7 +41,7 @@ vi.mock('../../../lib/tauri', () => ({
 
 beforeEach(() => {
   mockStore.config = {
-    stt_provider: 'deepgram',
+    stt_provider: 'custom-whisper',
     stt_api_key: '',
     stt_custom_api_key: '',
     stt_custom_base_url: 'http://localhost:8000/v1',
@@ -56,11 +55,15 @@ beforeEach(() => {
 afterEach(() => cleanup())
 
 describe('SttSetupStep', () => {
-  it('does not offer managed Cloud inside BYOK provider setup', () => {
+  it('offers only local providers and falls back from a removed provider', () => {
+    mockStore.config = { ...mockStore.config, stt_provider: 'removed-provider' }
+
     render(<SttSetupStep />)
 
     const providerSelect = screen.getByRole('combobox')
-    expect(providerSelect.querySelector('option[value="cloud"]')).toBeNull()
+    expect(providerSelect.querySelectorAll('option')).toHaveLength(2)
+    expect(providerSelect.querySelector('option[value="custom-whisper"]')).not.toBeNull()
+    expect(providerSelect.querySelector('option[value="apple-speech"]')).not.toBeNull()
   })
 
   it('preserves an existing Custom Whisper setup instead of switching providers', () => {
@@ -76,7 +79,7 @@ describe('SttSetupStep', () => {
     expect(screen.getByText('Custom Whisper')).toBeInTheDocument()
     expect(screen.getByText('http://localhost:9000/v1')).toBeInTheDocument()
     expect(screen.getByText('local-large-v3')).toBeInTheDocument()
-    expect(mockStore.updateConfig).not.toHaveBeenCalledWith({ stt_provider: 'deepgram' })
+    expect(mockStore.updateConfig).not.toHaveBeenCalled()
   })
 
   it('tests Custom Whisper with its configured endpoint and model', async () => {

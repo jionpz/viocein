@@ -29,16 +29,16 @@
   },
   "errors": {
     "stt_timeout": "语音识别超时，请重试。",
-    "stt_invalid_key": "云端语音访问失败，请重新登录或检查 API Key。",
+    "stt_invalid_key": "语音服务鉴权失败，请检查已配置的 API Key。",
     "stt_failed": "语音识别失败。{{details}}",
-    "stt_quota_exceeded": "云端语音识别额度已用完。请升级到 Pro 或切换到 BYOK 模式。",
+    "stt_quota_exceeded": "语音识别配额已用尽，请联系管理员。",
     "stt_no_speech_detected": "未检测到语音，请重试。",
     "output_fallback_clipboard": "文本输出失败，结果已改为复制到剪贴板。{{details}}",
     "output_wayland_unsupported": "当前 Wayland 会话无法直接输入，结果已复制到剪贴板。",
     "accessibility_required": "缺少辅助功能权限，结果已复制到剪贴板。",
     "output_streaming_partial": "流式插入提前停止，已保留插入的文本。{{details}}",
     "llm_failed": "AI 润色失败，已改为输出原始文本。{{details}}",
-    "llm_quota_exceeded": "云端 AI 额度已用完。请升级到 Pro 或切换到 BYOK 模式。",
+    "llm_quota_exceeded": "AI 配额已用尽，请联系管理员。",
     "output_wayland_clipboard_copy_only": "已复制到剪贴板。Wayland 下需要手动粘贴。"
   },
   "home": {
@@ -46,8 +46,6 @@
     "description": "使用 {{hotkey}} 开始语音录制。语音将被转录并可选择由 AI 润色。",
     "totalRecordings": "总录音数",
     "today": "今日",
-    "wordsRemaining": "剩余 words",
-    "wordsReset": "{{date}} 重置",
     "currentConfig": "当前配置",
     "sttProvider": "语音识别服务",
     "llmProvider": "LLM 服务",
@@ -99,10 +97,6 @@
       "setupComplete": "设置完成",
       "getStarted": "开始使用"
     },
-    "account": {
-      "signIn": "登录",
-      "signUp": "注册"
-    },
     "done": {
       "title": "一切就绪！",
       "capsuleOnDesktop": "桌面悬浮球",
@@ -136,10 +130,6 @@
         "needed": "需要",
         "later": "稍后"
       }
-    },
-    "mode": {
-      "cloud": "云端",
-      "recommended": "推荐"
     },
     "layout": {
       "skip": "跳过",
@@ -183,8 +173,6 @@
       "openMainWindow": "打开主窗口",
       "settings": "设置",
       "history": "历史记录",
-      "account": "账户",
-      "upgrade": "升级",
       "exit": "退出"
     }
   },
@@ -379,7 +367,6 @@
     "exportFailed": "导出词典失败"
   },
   "scenes": {
-    "signInToBrowse": "登录以浏览场景包。",
     "promptTemplate": "提示词模板",
     "copyPrompt": "复制提示词",
     "copied": "已复制",
@@ -388,7 +375,6 @@
     "noCustomScenesDesc": "创建一个本地场景，保存可复用的 AI 润色提示词。",
     "newScene": "新建场景",
     "builtInScenes": "内置场景",
-    "cloudPacks": "云端场景包",
     "failedToSave": "保存场景失败。",
     "export": "导出",
     "import": "导入",
@@ -467,7 +453,6 @@
     "failedToCreateCorrection": "创建纠正规则失败",
     "needsBrowserAccess": "需要浏览器访问",
     "providers": {
-      "managed_cloud": "云端",
       "byok": "自有模型",
       "local": "本地"
     },
@@ -475,26 +460,6 @@
       "partial": "部分结果",
       "fallback": "已回退输出",
       "clipboardFallback": "已复制到剪贴板"
-    }
-  },
-  "upgrade": {
-    "features": {
-      "sttTitle": "云端 STT",
-      "sttDetail": "高品质语音识别",
-      "llmTitle": "云端 LLM",
-      "llmDetail": "AI 文本润色",
-      "backupTitle": "云端备份",
-      "backupDetail": "同步你的设置和历史记录",
-      "scenesTitle": "云端场景包",
-      "scenesDetail": "精选提示词模板，未来支持场景同步",
-      "zeroConfigTitle": "零配置",
-      "zeroConfigDetail": "无需 API 密钥"
-    }
-  },
-  "account": {
-    "toast": {
-      "backupOk": "备份成功",
-      "subscriptionFail": "加载订阅信息失败"
     }
   },
   "error": {
@@ -534,40 +499,17 @@
       "clientBuffer": "受应用本地音频缓冲区的安全上限限制。",
       "unknownUpstream": "自定义服务的限制未知，因此使用保守的默认值。",
       "unknownProvider": "暂未识别此服务商，因此使用安全的回退值。",
-      "productSafety": "这是应用为流式语音服务设置的保守安全上限。",
-      "managedCapability": "已根据 viocein 云端服务自动设置。",
-      "encoderFallback": "托管音频编码器不可用，本次录音已使用较短的本地 WAV 安全上限。",
-      "managedFallback": "云端能力信息不可用或已过期，因此使用安全的 30 秒限制。"
+      "productSafety": "这是应用为流式语音服务设置的保守安全上限。"
     }
   },
   "providers": {
     "stt": {
-      "deepgram": "Deepgram Nova-3",
-      "assemblyai": "AssemblyAI",
-      "aliyunQwen3Asr": "阿里云 Qwen3 实时语音识别",
-      "volcengineDoubao": "火山引擎豆包实时语音识别",
-      "glmAsr": "智谱 GLM-ASR",
-      "openaiWhisper": "OpenAI Whisper",
-      "groqWhisper": "Groq Whisper",
-      "siliconflow": "硅基流动 SiliconFlow",
       "appleSpeech": "Apple Speech（本地）",
-      "customWhisper": "本地 / 自定义 Whisper",
-      "cloud": "viocein 云服务"
+      "customWhisper": "本地 / 自定义 Whisper"
     },
     "llm": {
-      "zhipu": "智谱",
-      "deepseek": "DeepSeek",
-      "siliconflow": "硅基流动 SiliconFlow",
-      "openai": "OpenAI",
-      "gemini": "Google Gemini",
-      "moonshot": "Moonshot (Kimi)",
-      "doubao": "豆包（火山引擎）",
-      "qwen": "通义千问",
-      "groq": "Groq",
-      "claude": "Claude",
-      "ollama": "Ollama (本地)",
-      "openrouter": "OpenRouter",
-      "cloud": "viocein 云服务"
+      "company": "公司大模型网关",
+      "ollama": "Ollama (本地)"
     }
   }
 }

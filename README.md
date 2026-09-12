@@ -94,10 +94,10 @@ CI 配置见 [.github/workflows/ci.yml](.github/workflows/ci.yml)。
 ```
 src/            React 前端（设置、历史、Ask 面板、Capsule 悬浮条）
 src-tauri/      Rust 后端（Tauri 命令、pipeline、出口策略、本地存储）
-docs/           工程设计与实现说明
+docs/           工程设计与实现说明（索引见 docs/README.md）
 ```
 
-需要了解某个设计时，先看 `docs/` 下同主题的 spec；出口相关的改动一律先读 `src-tauri/src/egress.rs`。
+`docs/2026-*.md` 是上游时期的历史 spec，其中涉及云端/订阅/发布的部分已不适用，详见 [docs/README.md](docs/README.md)。出口相关的改动一律先读 `src-tauri/src/egress.rs`。
 
 ## 许可
 
