@@ -11,7 +11,7 @@ type WsStream =
     tokio_tungstenite::WebSocketStream<tokio_tungstenite::MaybeTlsStream<tokio::net::TcpStream>>;
 
 // AssemblyAI Universal Streaming (v3) rejects binary frames outside 50-1000 ms.
-// OpenTypeless capture defaults to 20 ms chunks, so we re-buffer before send.
+// viocein capture defaults to 20 ms chunks, so we re-buffer before send.
 const MIN_CHUNK_MS: u32 = 50;
 const TARGET_CHUNK_MS: u32 = 100;
 const MAX_CHUNK_MS: u32 = 1000;

@@ -134,7 +134,7 @@ fn build_frame(
 fn build_full_client_request_frame(config: &SttConfig, sequence: i32) -> Result<Vec<u8>, AppError> {
     let payload = serde_json::json!({
         "user": {
-            "uid": "opentypeless"
+            "uid": "viocein"
         },
         "audio": {
             "format": "pcm",
@@ -357,7 +357,7 @@ async fn read_initial_response(ws: &mut WsStream) -> Result<(), AppError> {
 
 fn connect_id() -> String {
     format!(
-        "opentypeless-{}-{}",
+        "viocein-{}-{}",
         std::process::id(),
         chrono::Utc::now().timestamp_millis()
     )

@@ -419,7 +419,7 @@ mod platform {
             let thread_handles = Arc::clone(&handles);
             let (status_tx, status_rx) = mpsc::channel();
             thread::Builder::new()
-                .name("opentypeless-native-hotkey-mac".to_string())
+                .name("viocein-native-hotkey-mac".to_string())
                 .spawn(move || run_event_tap_loop(bindings, handler, thread_handles, status_tx))
                 .map_err(|error| {
                     format!("Failed to spawn macOS native hotkey monitor thread: {error}")
@@ -645,7 +645,7 @@ mod platform {
     };
 
     const STARTUP_TIMEOUT: Duration = Duration::from_secs(3);
-    const ACCEPT_SYNTHETIC_EVENTS_ENV: &str = "OPENTYPELESS_ACCEPT_SYNTHETIC_HOTKEY_EVENTS";
+    const ACCEPT_SYNTHETIC_EVENTS_ENV: &str = "VIOCEIN_ACCEPT_SYNTHETIC_HOTKEY_EVENTS";
 
     const WM_KEYDOWN: usize = 0x0100;
     const WM_KEYUP: usize = 0x0101;
@@ -708,7 +708,7 @@ mod platform {
             let startup = Arc::new(WindowsStartupState::new());
             let thread_startup = Arc::clone(&startup);
             let thread = thread::Builder::new()
-                .name("opentypeless-native-hotkey-win".to_string())
+                .name("viocein-native-hotkey-win".to_string())
                 .spawn(move || run_keyboard_hook_loop(bindings, handler, thread_startup, status_tx))
                 .map_err(|error| {
                     format!("Failed to spawn Windows native hotkey monitor thread: {error}")

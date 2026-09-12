@@ -131,7 +131,7 @@ impl ContextDetectorHandle {
         let worker_mapping_store = mapping_store.clone();
         let latest_candidate = Arc::new(Mutex::new(None));
         let worker = std::thread::Builder::new()
-            .name("opentypeless-context-detector".to_string())
+            .name("viocein-context-detector".to_string())
             .spawn(move || {
                 run_detector(
                     worker_source,

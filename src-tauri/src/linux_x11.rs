@@ -61,7 +61,7 @@ mod tests {
     #[test]
     fn reports_unavailable_when_libx11_cannot_be_loaded() {
         let status = init_xlib_threads_with(|| {
-            unsafe { libloading::Library::new("__opentypeless_missing_lib__.so") }
+            unsafe { libloading::Library::new("__viocein_missing_lib__.so") }
                 .map(|_| xinitthreads_success as unsafe extern "C" fn() -> i32)
         });
 

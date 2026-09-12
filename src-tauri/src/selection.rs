@@ -19,7 +19,7 @@ fn clipboard_copy_sentinel() -> String {
         .map(|duration| duration.as_nanos())
         .unwrap_or_default();
     format!(
-        "__opentypeless_copy_sentinel_{}_{}__",
+        "__viocein_copy_sentinel_{}_{}__",
         std::process::id(),
         nanos
     )

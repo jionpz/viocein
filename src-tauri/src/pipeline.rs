@@ -948,14 +948,14 @@ impl PipelineHandle {
         // Update tray tooltip + menu to reflect pipeline state
         if let Some(tray_handle) = self.app_handle.try_state::<crate::TrayHandle>() {
             let tooltip = match new_state {
-                PipelineState::Preparing => "OpenTypeless - Preparing...",
-                PipelineState::Recording => "OpenTypeless - Recording...",
-                PipelineState::Transcribing => "OpenTypeless - Transcribing...",
-                PipelineState::Polishing => "OpenTypeless - Polishing...",
-                PipelineState::Outputting => "OpenTypeless - Outputting...",
-                PipelineState::AskRecording => "OpenTypeless - Ask...",
-                PipelineState::AskThinking => "OpenTypeless - Answering...",
-                PipelineState::Idle => "OpenTypeless",
+                PipelineState::Preparing => "viocein - Preparing...",
+                PipelineState::Recording => "viocein - Recording...",
+                PipelineState::Transcribing => "viocein - Transcribing...",
+                PipelineState::Polishing => "viocein - Polishing...",
+                PipelineState::Outputting => "viocein - Outputting...",
+                PipelineState::AskRecording => "viocein - Ask...",
+                PipelineState::AskThinking => "viocein - Answering...",
+                PipelineState::Idle => "viocein",
             };
             if let Ok(t) = tray_handle.tray.lock() {
                 let _ = t.set_tooltip(Some(tooltip));
@@ -1780,7 +1780,7 @@ impl PipelineHandle {
         // Update tray for transcribing state
         if let Some(tray_handle) = self.app_handle.try_state::<crate::TrayHandle>() {
             if let Ok(t) = tray_handle.tray.lock() {
-                let _ = t.set_tooltip(Some("OpenTypeless - Transcribing..."));
+                let _ = t.set_tooltip(Some("viocein - Transcribing..."));
             }
         }
         crate::refresh_tray(&self.app_handle);

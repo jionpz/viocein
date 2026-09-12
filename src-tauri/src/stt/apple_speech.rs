@@ -56,7 +56,7 @@ impl AppleSpeechAvailability {
                 AppleSpeechAuthorizationStatus::Denied => (
                     false,
                     Some("speech_permission_denied".to_string()),
-                    Some("Speech Recognition permission is denied for OpenTypeless".to_string()),
+                    Some("Speech Recognition permission is denied for viocein".to_string()),
                 ),
                 AppleSpeechAuthorizationStatus::Restricted => (
                     false,
@@ -232,7 +232,7 @@ mod platform {
 
         let wav = crate::stt::whisper_compat::WhisperCompatProvider::build_wav(pcm, sample_rate);
         let path = std::env::temp_dir().join(format!(
-            "opentypeless-apple-speech-{}-{}.wav",
+            "viocein-apple-speech-{}-{}.wav",
             std::process::id(),
             unique_suffix()
         ));
@@ -259,7 +259,7 @@ mod platform {
         match status {
             AppleSpeechAuthorizationStatus::Authorized => return Ok(status),
             AppleSpeechAuthorizationStatus::Denied => {
-                bail!("Speech Recognition permission is denied for OpenTypeless")
+                bail!("Speech Recognition permission is denied for viocein")
             }
             AppleSpeechAuthorizationStatus::Restricted => {
                 bail!("Speech Recognition is restricted on this Mac")
@@ -286,7 +286,7 @@ mod platform {
                 Ok(AppleSpeechAuthorizationStatus::Authorized)
             }
             Ok(AppleSpeechAuthorizationStatus::Denied) => {
-                bail!("Speech Recognition permission is denied for OpenTypeless")
+                bail!("Speech Recognition permission is denied for viocein")
             }
             Ok(AppleSpeechAuthorizationStatus::Restricted) => {
                 bail!("Speech Recognition is restricted on this Mac")

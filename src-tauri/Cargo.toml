@@ -1,5 +1,5 @@
 [package]
-name = "opentypeless"
+name = "viocein"
 version = "0.1.42"
 description = "AI-powered speech-to-text and text polishing desktop app"
 authors = ["OpenTypeless Contributors"]
@@ -8,7 +8,7 @@ edition = "2021"
 rust-version = "1.82"
 
 [lib]
-name = "opentypeless_lib"
+name = "viocein_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
 
 [features]

@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "OpenTypeless",
+  "productName": "viocein",
   "version": "0.1.42",
-  "identifier": "com.opentypeless.app",
+  "identifier": "com.viocein.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
@@ -14,7 +14,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "OpenTypeless",
+        "title": "viocein",
         "width": 900,
         "height": 700,
         "minWidth": 720,
@@ -29,7 +29,7 @@
       },
       {
         "label": "capsule",
-        "title": "OpenTypeless Capsule",
+        "title": "viocein",
         "width": 80,
         "height": 80,
         "resizable": false,
@@ -46,7 +46,7 @@
       },
       {
         "label": "ask",
-        "title": "OpenTypeless Ask",
+        "title": "viocein",
         "width": 400,
         "height": 220,
         "minWidth": 360,
@@ -75,7 +75,7 @@
     },
     "deep-link": {
       "desktop": {
-        "schemes": ["opentypeless"]
+        "schemes": ["viocein"]
       }
     }
   },

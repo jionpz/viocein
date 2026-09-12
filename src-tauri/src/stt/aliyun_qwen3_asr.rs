@@ -84,7 +84,7 @@ impl AliyunQwen3AsrProvider {
         http::Request::builder()
             .uri(uri.clone())
             .header("Authorization", format!("Bearer {api_key}"))
-            .header("User-Agent", "OpenTypeless/1")
+            .header("User-Agent", "viocein/1")
             .header("Host", host)
             .header("Connection", "Upgrade")
             .header("Upgrade", "websocket")
@@ -424,7 +424,7 @@ mod tests {
 
         assert_eq!(request.uri(), ALIYUN_QWEN3_ASR_CHINA_URL);
         assert_eq!(request.headers()["authorization"], "Bearer test-key");
-        assert_eq!(request.headers()["user-agent"], "OpenTypeless/1");
+        assert_eq!(request.headers()["user-agent"], "viocein/1");
         assert_eq!(request.headers()["host"], "dashscope.aliyuncs.com");
     }
 

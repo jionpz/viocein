@@ -32,7 +32,7 @@ use std::sync::{Arc, Mutex};
 
 /// Default cloud API base URL. Override with the `API_BASE_URL` environment variable.
 pub const DEFAULT_API_BASE_URL: &str = "https://www.opentypeless.com";
-pub const CLIENT_VERSION_HEADER: &str = "X-OpenTypeless-Version";
+pub const CLIENT_VERSION_HEADER: &str = "X-viocein-Version";
 const HTTP_POOL_IDLE_TIMEOUT_SECS: u64 = 10 * 60;
 const HTTP_TCP_KEEPALIVE_SECS: u64 = 60;
 
@@ -217,7 +217,7 @@ fn build_ask_window(handle: &tauri::AppHandle) -> tauri::Result<tauri::WebviewWi
         "ask",
         tauri::WebviewUrl::App("index.html#ask".into()),
     )
-    .title("OpenTypeless Ask")
+    .title("viocein Ask")
     .inner_size(400.0, 220.0)
     .min_inner_size(360.0, 180.0)
     .resizable(false)
@@ -292,7 +292,7 @@ mod tests {
 
     #[test]
     fn desktop_client_version_header_matches_frontend_contract() {
-        assert_eq!(crate::CLIENT_VERSION_HEADER, "X-OpenTypeless-Version");
+        assert_eq!(crate::CLIENT_VERSION_HEADER, "X-viocein-Version");
         assert_eq!(crate::desktop_client_version(), env!("CARGO_PKG_VERSION"));
     }
 
@@ -331,8 +331,8 @@ mod tests {
 
     #[test]
     fn cli_action_parser_supports_first_and_later_instance_arguments() {
-        let toggle = vec!["/usr/bin/opentypeless".to_string(), "toggle".to_string()];
-        let ask = vec!["OpenTypeless.exe".to_string(), "ask".to_string()];
+        let toggle = vec!["/usr/bin/viocein".to_string(), "toggle".to_string()];
+        let ask = vec!["viocein.exe".to_string(), "ask".to_string()];
 
         assert_eq!(parse_cli_action(&toggle), Some(CliAction::Toggle));
         assert_eq!(parse_cli_action(&ask), Some(CliAction::Ask));
@@ -341,11 +341,11 @@ mod tests {
     #[test]
     fn cli_action_parser_does_not_hijack_deep_links_or_ambiguous_commands() {
         let deep_link = vec![
-            "opentypeless".to_string(),
-            "opentypeless://auth/callback?mode=toggle".to_string(),
+            "viocein".to_string(),
+            "viocein://auth/callback?mode=toggle".to_string(),
         ];
         let ambiguous = vec![
-            "opentypeless".to_string(),
+            "viocein".to_string(),
             "toggle".to_string(),
             "ask".to_string(),
         ];
@@ -648,10 +648,10 @@ fn apply_linux_workarounds() {
         let env = LinuxLaunchEnv::current();
         let plan = linux_workaround_plan(
             &env,
-            env_flag_enabled("OPENTYPELESS_DISABLE_WEBKIT_DMABUF"),
-            env_flag_enabled("OPENTYPELESS_DISABLE_WEBKIT_COMPOSITING"),
-            env_flag_enabled("OPENTYPELESS_FORCE_GDK_X11"),
-            env_flag_enabled("OPENTYPELESS_FORCE_SOFTWARE_GL"),
+            env_flag_enabled("VIOCEIN_DISABLE_WEBKIT_DMABUF"),
+            env_flag_enabled("VIOCEIN_DISABLE_WEBKIT_COMPOSITING"),
+            env_flag_enabled("VIOCEIN_FORCE_GDK_X11"),
+            env_flag_enabled("VIOCEIN_FORCE_SOFTWARE_GL"),
         );
 
         if plan.disable_dmabuf {
@@ -850,7 +850,7 @@ pub fn run() {
     tracing_subscriber::fmt()
         .with_env_filter(
             EnvFilter::from_default_env().add_directive(
-                "opentypeless=debug"
+                "viocein=debug"
                     .parse()
                     .expect("static directive is valid"),
             ),
@@ -921,7 +921,7 @@ pub fn run() {
             // Initialize data directory and database
             let data_dir = app.path().app_data_dir()?;
             std::fs::create_dir_all(&data_dir)?;
-            let db_path = data_dir.join("opentypeless.db");
+            let db_path = data_dir.join("viocein.db");
 
             // Initialize stores
             let config_manager = storage::ConfigManager::new(app_handle.clone());
@@ -1006,7 +1006,7 @@ pub fn run() {
                         .clone(),
                 )
                 .menu(&tray_menu)
-                .tooltip("OpenTypeless")
+                .tooltip("viocein")
                 .on_menu_event(move |app, event| match event.id.as_ref() {
                     "quit" => {
                         app.exit(0);
@@ -1193,7 +1193,7 @@ pub fn run() {
                 }
             }
 
-            tracing::info!("OpenTypeless started");
+            tracing::info!("viocein started");
 
             // P1-2: Pre-warm HTTP connection pool in background
             let warm_handle = app_handle.clone();

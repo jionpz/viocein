@@ -8,7 +8,7 @@ use std::fmt;
 
 pub const MAX_IMPORT_BYTES: usize = 1024 * 1024;
 pub const MAX_IMPORT_ROWS: usize = 10_000;
-const CSV_MARKER: &str = "# opentypeless_dictionary";
+const CSV_MARKER: &str = "# viocein_dictionary";
 const CSV_HEADER: [&str; 6] = [
     "type",
     "word",
@@ -208,7 +208,7 @@ fn parse_json(text: &str) -> Result<ParsedDictionaryImport, DictionaryImportErro
         .as_object()
         .ok_or(DictionaryImportError::InvalidStructure)?;
     if let Some(format) = object.get("format") {
-        if format.as_str() != Some("opentypeless_dictionary")
+        if format.as_str() != Some("viocein_dictionary")
             || object.get("version").and_then(serde_json::Value::as_u64) != Some(1)
         {
             return Err(DictionaryImportError::InvalidStructure);
@@ -590,7 +590,7 @@ pub fn export_dictionary_json(
         })
         .collect::<Vec<_>>();
     serde_json::to_string_pretty(&serde_json::json!({
-        "format": "opentypeless_dictionary",
+        "format": "viocein_dictionary",
         "version": 1,
         "dictionary": dictionary,
         "correctionRules": corrections,
@@ -665,7 +665,7 @@ mod tests {
             .unwrap()
             .as_nanos();
         let path = std::env::temp_dir().join(format!(
-            "opentypeless-dictionary-io-{name}-{}-{nonce}.sqlite",
+            "viocein-dictionary-io-{name}-{}-{nonce}.sqlite",
             std::process::id()
         ));
         DictionaryStore::new(path).unwrap()
@@ -676,7 +676,7 @@ mod tests {
         let input = concat!(
             "\u{feff}type,word,pronunciation,wrong_phrase,corrected_phrase,enabled\r\n",
             "dictionary,\"Open,Typeless\",\"open\r\ntypeless\",,,true\r\n",
-            "correction,,,\"open, type less\",OpenTypeless,true\r\n"
+            "correction,,,\"open, type less\",viocein,true\r\n"
         );
 
         let parsed = parse_dictionary_import(input.as_bytes(), ImportFormat::Csv).unwrap();
@@ -694,7 +694,7 @@ mod tests {
             parsed.rows[1],
             ParsedDictionaryRow::Correction {
                 pattern: "open, type less".to_string(),
-                replacement: "OpenTypeless".to_string(),
+                replacement: "viocein".to_string(),
                 enabled: true,
             }
         );
@@ -723,7 +723,7 @@ mod tests {
 
     #[test]
     fn parser_reports_mixed_valid_and_invalid_rows_without_mutation() {
-        let input = format!("OpenTypeless\n{}\n# ignored", "x".repeat(101));
+        let input = format!("viocein\n{}\n# ignored", "x".repeat(101));
 
         let parsed = parse_dictionary_import(input.as_bytes(), ImportFormat::Txt).unwrap();
 
@@ -736,10 +736,10 @@ mod tests {
     #[test]
     fn json_parser_accepts_standalone_and_backup_subset_shapes() {
         let standalone = br#"{
-            "format":"opentypeless_dictionary",
+            "format":"viocein_dictionary",
             "version":1,
-            "dictionary":[{"word":"OpenTypeless","pronunciation":"open typeless"}],
-            "correctionRules":[{"pattern":"open type less","replacement":"OpenTypeless","enabled":false}]
+            "dictionary":[{"word":"viocein","pronunciation":"open typeless"}],
+            "correctionRules":[{"pattern":"open type less","replacement":"viocein","enabled":false}]
         }"#;
         let backup = br#"{"dictionary":[{"id":7,"word":"TalkMore","pronunciation":null}]}"#;
 
@@ -773,7 +773,7 @@ mod tests {
         }];
 
         let exported = export_dictionary_csv(&dictionary, &corrections).unwrap();
-        assert!(exported.starts_with("# opentypeless_dictionary,1"));
+        assert!(exported.starts_with("# viocein_dictionary,1"));
         assert!(exported.contains("'  =HYPERLINK"));
         assert!(exported.contains("'+cmd"));
         assert!(exported.contains("'-danger"));
@@ -800,20 +800,20 @@ dictionary,'=literal,,,,true\n";
         let exported = export_dictionary_json(
             &[DictionaryEntry {
                 id: 9,
-                word: "OpenTypeless".to_string(),
+                word: "viocein".to_string(),
                 pronunciation: None,
             }],
             &[CorrectionRule {
                 id: 8,
                 pattern: "open type less".to_string(),
-                replacement: "OpenTypeless".to_string(),
+                replacement: "viocein".to_string(),
                 enabled: true,
             }],
         )
         .unwrap();
         let value: serde_json::Value = serde_json::from_str(&exported).unwrap();
 
-        assert_eq!(value["format"], "opentypeless_dictionary");
+        assert_eq!(value["format"], "viocein_dictionary");
         assert_eq!(value["version"], 1);
         assert!(value.get("dictionary").is_some());
         assert!(value.get("correctionRules").is_some());
@@ -825,9 +825,9 @@ dictionary,'=literal,,,,true\n";
     #[tokio::test]
     async fn preview_and_commit_dedupe_nfkc_case_and_pairs() {
         let store = temp_store("dedupe");
-        store.add("OpenTypeless", None).await.unwrap();
+        store.add("viocein", None).await.unwrap();
         store
-            .add_correction("open type less", "OpenTypeless")
+            .add_correction("open type less", "viocein")
             .await
             .unwrap();
         let parsed = ParsedDictionaryImport {
@@ -842,7 +842,7 @@ dictionary,'=literal,,,,true\n";
                 },
                 ParsedDictionaryRow::Correction {
                     pattern: " OPEN TYPE LESS ".to_string(),
-                    replacement: "opentypeless".to_string(),
+                    replacement: "viocein".to_string(),
                     enabled: true,
                 },
             ],
