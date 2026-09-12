@@ -50,14 +50,24 @@ jobs:
       - name: Build installers
         run: npm run tauri build -- --target x86_64-pc-windows-msvc
 
+      # upload-artifact 在有多条 path 时会按它们的公共父目录保留层级(这里会变成
+      # nsis/ 与 msi/ 两层子目录),publish job 的扁平 file 匹配就会漏掉安装包。
+      # 先摊平到 dist/,保证 artifact 里是顶层的安装包文件。
+      - name: Stage installers
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe dist/
+          cp src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi dist/
+          ls -la dist
+
       - name: Upload installers
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: windows-x86_64
           if-no-files-found: error
-          path: |
-            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
-            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+          path: dist/*
 
   build-macos:
     runs-on: macos-latest
@@ -104,12 +114,19 @@ jobs:
           app="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/viocein.app"
           codesign --verify --deep --strict --verbose=2 "$app"
 
+      - name: Stage dmg
+        run: |
+          set -euo pipefail
+          mkdir -p dist
+          cp src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg dist/
+          ls -la dist
+
       - name: Upload dmg
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: macos-aarch64
           if-no-files-found: error
-          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+          path: dist/*
 
   publish:
     if: startsWith(github.ref, 'refs/tags/v')
@@ -127,7 +144,15 @@ jobs:
         working-directory: dist
         run: |
           set -euo pipefail
-          find . -maxdepth 1 -type f | sort
+          find . -type f | sort
+          # 每个平台都必须有安装包;少了就是 artifact 布局或构建出了问题,
+          # 宁可让发布失败,也别发出一个只有半套安装包的 Release。
+          for ext in exe msi dmg; do
+            if ! compgen -G "*.${ext}" > /dev/null; then
+              echo "::error::dist/ 下缺少 *.${ext} 安装包"
+              exit 1
+            fi
+          done
           find . -maxdepth 1 -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) \
             -printf '%f\n' | sort | xargs sha256sum | tee SHA256SUMS.txt
 

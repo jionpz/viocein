@@ -9,7 +9,11 @@ fork 之前的历史见 git 记录。云端账号、订阅、托管语音识别�
 
 ## [Unreleased]
 
-(暂无)
+### Fixed
+
+- 发布流水线:Windows 安装包在 artifact 里带了 `nsis/` / `msi/` 子目录层级,而
+  publish job 只扫顶层文件,导致 v0.2.2 的 Release 一度只挂上 macOS 的 dmg。改为
+  上传前先把安装包摊平到 `dist/`,并在发布前断言 exe / msi / dmg 三种产物齐全。
 
 ## [0.2.2] - 2026-09-13
 
