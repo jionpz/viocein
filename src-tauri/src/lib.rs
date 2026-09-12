@@ -3,6 +3,7 @@ pub mod audio;
 pub mod commands;
 pub mod credentials;
 pub mod dictionary_io;
+pub mod egress;
 pub mod error;
 pub mod hotkey;
 #[cfg(target_os = "linux")]
@@ -30,9 +31,6 @@ use tracing_subscriber::EnvFilter;
 
 use std::sync::{Arc, Mutex};
 
-/// Default cloud API base URL. Override with the `API_BASE_URL` environment variable.
-pub const DEFAULT_API_BASE_URL: &str = "https://www.opentypeless.com";
-pub const CLIENT_VERSION_HEADER: &str = "X-viocein-Version";
 const HTTP_POOL_IDLE_TIMEOUT_SECS: u64 = 10 * 60;
 const HTTP_TCP_KEEPALIVE_SECS: u64 = 60;
 
@@ -44,19 +42,6 @@ fn build_shared_http_client() -> reqwest::Client {
         .timeout(std::time::Duration::from_secs(30))
         .build()
         .expect("Failed to create HTTP client")
-}
-
-/// Read the cloud API base URL from the environment, falling back to the compiled default.
-pub fn api_base_url() -> String {
-    std::env::var("API_BASE_URL").unwrap_or_else(|_| DEFAULT_API_BASE_URL.to_string())
-}
-
-pub fn desktop_client_version() -> &'static str {
-    env!("CARGO_PKG_VERSION")
-}
-
-pub fn with_desktop_client_version(request: reqwest::RequestBuilder) -> reqwest::RequestBuilder {
-    request.header(CLIENT_VERSION_HEADER, desktop_client_version())
 }
 
 /// Cached hotkey mode to avoid loading config from disk on every keypress.
@@ -74,25 +59,6 @@ pub struct CloseToTrayCache(pub Arc<Mutex<bool>>);
 
 /// Last global-hotkey registration error, if startup or settings registration failed.
 pub struct HotkeyRegistrationError(pub Arc<Mutex<Option<String>>>);
-
-/// In-memory copy of the system-vault-backed cloud session token.
-/// The main renderer may restore it for authenticated API calls; native STT/LLM reads it directly.
-pub struct SessionTokenStore(pub Arc<Mutex<String>>);
-
-fn with_restored_session_token<R, V>(builder: tauri::Builder<R>, vault: &V) -> tauri::Builder<R>
-where
-    R: tauri::Runtime,
-    V: credentials::CredentialSecretReader,
-{
-    let token = credentials::load_cloud_session_token(vault)
-        .unwrap_or_else(|error| {
-            tracing::warn!("Failed to restore cloud session from the system vault: {error}");
-            None
-        })
-        .unwrap_or_default();
-
-    builder.manage(SessionTokenStore(Arc::new(Mutex::new(token))))
-}
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 struct AutoStartSyncOutcome {
@@ -264,16 +230,14 @@ async fn show_ask_window(
     app: tauri::AppHandle,
     state: tauri::State<'_, commands::ask::AskDictationState>,
     config_state: tauri::State<'_, storage::ConfigManager>,
-    token_store: tauri::State<'_, SessionTokenStore>,
     client: tauri::State<'_, reqwest::Client>,
 ) -> Result<(), String> {
-    commands::ask::start_ask_flow(app, state, config_state, token_store, client).await
+    commands::ask::start_ask_flow(app, state, config_state, client).await
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use anyhow::Result;
 
     fn text_mentions(text: &str, keywords: &[&str]) -> bool {
         let normalized = text.to_ascii_lowercase();
@@ -288,36 +252,6 @@ mod tests {
     #[test]
     fn dock_reopen_restores_main_window_even_when_capsule_is_visible() {
         assert!(should_restore_main_window_on_reopen(true));
-    }
-
-    #[test]
-    fn desktop_client_version_header_matches_frontend_contract() {
-        assert_eq!(crate::CLIENT_VERSION_HEADER, "X-viocein-Version");
-        assert_eq!(crate::desktop_client_version(), env!("CARGO_PKG_VERSION"));
-    }
-
-    struct StaticSessionVault(&'static str);
-
-    impl credentials::CredentialSecretReader for StaticSessionVault {
-        fn get_secret(&self, _namespace: &str, _provider: &str) -> Result<Option<String>> {
-            Ok(Some(self.0.to_string()))
-        }
-    }
-
-    #[test]
-    fn cloud_session_state_is_managed_before_setup_and_window_scripts() {
-        let app = with_restored_session_token(
-            tauri::test::mock_builder(),
-            &StaticSessionVault("restored-token"),
-        )
-        .build(tauri::test::mock_context(tauri::test::noop_assets()))
-        .unwrap();
-
-        let state = app.state::<SessionTokenStore>();
-        assert_eq!(
-            state.0.lock().unwrap_or_else(|e| e.into_inner()).as_str(),
-            "restored-token"
-        );
     }
 
     #[test]
@@ -823,13 +757,11 @@ fn dispatch_cli_action(app: &tauri::AppHandle, action: CliAction) {
                 }
                 let ask_state = app_handle.state::<commands::ask::AskDictationState>();
                 let config_state = app_handle.state::<storage::ConfigManager>();
-                let token_store = app_handle.state::<SessionTokenStore>();
                 let client = app_handle.state::<reqwest::Client>();
                 if let Err(error) = commands::ask::start_ask_flow(
                     app_handle.clone(),
                     ask_state,
                     config_state,
-                    token_store,
                     client,
                 )
                 .await
@@ -849,11 +781,8 @@ pub fn run() {
 
     tracing_subscriber::fmt()
         .with_env_filter(
-            EnvFilter::from_default_env().add_directive(
-                "viocein=debug"
-                    .parse()
-                    .expect("static directive is valid"),
-            ),
+            EnvFilter::from_default_env()
+                .add_directive("viocein=debug".parse().expect("static directive is valid")),
         )
         .init();
 
@@ -873,34 +802,13 @@ pub fn run() {
         }
     }
 
-    // Builder-managed state exists before Tauri creates configured webviews.
-    // Registering this in `.setup(...)` races the main renderer's first invoke on WebView2.
-    let builder = with_restored_session_token(
-        tauri::Builder::default(),
-        &credentials::SystemCredentialVault,
-    );
-
-    builder
+    tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             None,
         ))
-        .plugin(tauri_plugin_process::init())
-        .plugin(tauri_plugin_updater::Builder::new().build())
-        .plugin(tauri_plugin_opener::init())
-        .plugin(tauri_plugin_single_instance::init(|app, args, _cwd| {
-            if let Some(action) = parse_cli_action(&args) {
-                dispatch_cli_action(app, action);
-                return;
-            }
-            // Deep-link URL forwarding is handled automatically by the
-            // "deep-link" feature of single-instance plugin.
-            // Just focus the main window so the user sees the result.
-            restore_main_window(app);
-        }))
-        .plugin(tauri_plugin_deep_link::init())
         .setup(|app| {
             // Open devtools only when the "devtools" feature is explicitly enabled
             #[cfg(feature = "devtools")]
@@ -1233,6 +1141,7 @@ pub fn run() {
             commands::misc::check_accessibility_permission,
             commands::misc::request_accessibility_permission,
             commands::misc::request_browser_access,
+            commands::misc::quit_app,
             commands::config::get_config,
             commands::config::update_config,
             commands::credentials::get_credential_status,
@@ -1242,17 +1151,13 @@ pub fn run() {
             commands::credentials::migrate_legacy_credentials,
             commands::stt::get_stt_provider_diagnostics,
             commands::stt::get_stt_recording_capability,
-            commands::stt::cache_managed_stt_capability,
-            commands::stt::clear_managed_stt_capability,
             commands::stt::test_stt_connection,
             commands::llm::test_llm_connection,
             commands::llm::bench_llm_connection,
-            commands::llm::get_llm_model_capability,
             commands::stt::bench_stt_connection,
             commands::llm::fetch_llm_models,
             commands::history::get_history,
             commands::history::clear_history,
-            commands::backup::restore_backup_data,
             commands::dictionary::get_dictionary,
             commands::dictionary::add_dictionary_entry,
             commands::dictionary::update_dictionary_entry,
@@ -1277,8 +1182,6 @@ pub fn run() {
             commands::misc::get_system_diagnostics,
             commands::config::set_auto_start,
             commands::config::set_capsule_auto_hide,
-            commands::config::get_session_token,
-            commands::config::set_session_token,
         ])
         .build(tauri::generate_context!())
         .expect("error while building tauri application")

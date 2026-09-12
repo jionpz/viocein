@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { isMacPlatform, useAppStore } from '../../stores/appStore'
-import { hasManagedCloudAccess, useAuthStore } from '../../stores/authStore'
 import {
   STT_PROVIDERS,
   LANGUAGES,
@@ -9,7 +8,6 @@ import {
   CUSTOM_WHISPER_PROVIDER,
   CUSTOM_STT_DEFAULTS,
   CUSTOM_STT_PRESETS,
-  VOLCENGINE_STT_RESOURCES,
 } from '../../lib/constants'
 import {
   benchSttConnection,
@@ -21,7 +19,7 @@ import {
   type SttProviderDiagnostics,
 } from '../../lib/tauri'
 import { FormField } from './shared/FormField'
-import { CheckCircle2, XCircle, Loader2, Crown } from 'lucide-react'
+import { CheckCircle2, XCircle, Loader2 } from 'lucide-react'
 
 const RECORDING_LIMIT_PRESETS = [30, 60, 120, 300, 600, 1800, 3600]
 const MIN_CUSTOM_RECORDING_SECONDS = 30
@@ -45,23 +43,16 @@ export function SttPane() {
   const sttLatencyMs = useAppStore((s) => s.sttLatencyMs)
   const setSttLatencyMs = useAppStore((s) => s.setSttLatencyMs)
   const platformCapabilities = useAppStore((s) => s.platformCapabilities)
-  const { user } = useAuthStore()
-  const hasCloudAccess = useAuthStore(hasManagedCloudAccess)
   const { t } = useTranslation()
   const [testErrorMessage, setTestErrorMessage] = useState<string | null>(null)
   const [credentialErrorMessage, setCredentialErrorMessage] = useState<string | null>(null)
   const [recordingLimit, setRecordingLimit] = useState<ResolvedSttRecordingLimit | null>(null)
   const [customDurationEntryRequested, setCustomDurationEntryRequested] = useState(false)
 
-  const isCloud = config.stt_provider === 'cloud'
   const isAppleSpeech = config.stt_provider === APPLE_SPEECH_PROVIDER
   const isCustomWhisper = config.stt_provider === CUSTOM_WHISPER_PROVIDER
-  const isVolcengineDoubao = config.stt_provider === 'volcengine-doubao'
-  const isAliyunQwen3 = config.stt_provider === 'aliyun-qwen3-asr'
-  const credentialProvider = isCustomWhisper ? CUSTOM_WHISPER_PROVIDER : config.stt_provider
-  const legacyApiKey = isCustomWhisper ? config.stt_custom_api_key : config.stt_api_key
-  const volcengineResourceId =
-    config.stt_volcengine_resource_id || VOLCENGINE_STT_RESOURCES[0].value
+  const credentialProvider = CUSTOM_WHISPER_PROVIDER
+  const legacyApiKey = config.stt_custom_api_key
   const credentialSaveRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [apiKeyDraft, setApiKeyDraft] = useState(legacyApiKey)
   const [sttDiagnostics, setSttDiagnostics] = useState<SttProviderDiagnostics | null>(null)
@@ -75,15 +66,10 @@ export function SttPane() {
   const appleSpeechUnavailable = sttDiagnostics?.ready === false
   const canTest = isAppleSpeech
     ? appleSpeechReady
-    : isCustomWhisper
-      ? Boolean(config.stt_custom_base_url.trim() && config.stt_custom_model.trim())
-      : Boolean(apiKeyDraft)
-  const goUpgrade = () => {
-    window.location.hash = '#/upgrade'
-  }
+    : Boolean(config.stt_custom_base_url.trim() && config.stt_custom_model.trim())
 
   useEffect(() => {
-    if (isCloud || isAppleSpeech) {
+    if (isAppleSpeech) {
       setApiKeyDraft('')
       setCredentialErrorMessage(null)
       return
@@ -101,7 +87,7 @@ export function SttPane() {
     return () => {
       cancelled = true
     }
-  }, [credentialProvider, isAppleSpeech, isCloud, legacyApiKey])
+  }, [credentialProvider, isAppleSpeech, legacyApiKey])
 
   useEffect(() => {
     if (!isCustomWhisper && !isAppleSpeech) {
@@ -174,7 +160,7 @@ export function SttPane() {
 
   const persistSttCredential = useCallback(
     (value: string, delayMs = 350) => {
-      if (isCloud || isAppleSpeech) return
+      if (isAppleSpeech) return
       if (credentialSaveRef.current) clearTimeout(credentialSaveRef.current)
       credentialSaveRef.current = setTimeout(() => {
         credentialSaveRef.current = null
@@ -187,7 +173,7 @@ export function SttPane() {
           })
       }, delayMs)
     },
-    [credentialProvider, isAppleSpeech, isCloud],
+    [credentialProvider, isAppleSpeech],
   )
 
   const handleTest = async () => {
@@ -202,23 +188,6 @@ export function SttPane() {
           config.stt_provider,
           config.stt_custom_base_url,
           config.stt_custom_model,
-        )
-      } else if (isVolcengineDoubao) {
-        ms = await benchSttConnection(
-          apiKeyDraft,
-          config.stt_provider,
-          undefined,
-          undefined,
-          volcengineResourceId,
-        )
-      } else if (isAliyunQwen3) {
-        ms = await benchSttConnection(
-          apiKeyDraft,
-          config.stt_provider,
-          undefined,
-          undefined,
-          undefined,
-          config.stt_aliyun_qwen_region,
         )
       } else {
         ms = await benchSttConnection(apiKeyDraft, config.stt_provider)
@@ -258,20 +227,12 @@ export function SttPane() {
     canEnterCustomDuration &&
     (customDurationEntryRequested ||
       (config.recording_limit_mode === 'custom' && !savedDurationIsPreset))
-  const isManagedCapability =
-    recordingLimit?.capability.explanationKey === 'recordingLimits.reasons.managedCapability'
-  const isManagedFallback =
-    recordingLimit?.capability.explanationKey === 'recordingLimits.reasons.managedFallback'
   const isProviderFixedLimit =
     !canEnterCustomDuration &&
     recordingLimit?.capability.explanationKey === 'recordingLimits.reasons.providerDuration'
   const recordingLimitHelper = recordingLimit
     ? showCustomDurationEntry
-      ? t(
-          isManagedCapability
-            ? 'recordingLimits.allowedCloudRange'
-            : 'recordingLimits.allowedRangeWithReason',
-          {
+      ? t('recordingLimits.allowedRangeWithReason', {
             min: formatRecordingDuration(MIN_CUSTOM_RECORDING_SECONDS, t),
             max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
             reason: t(recordingLimit.capability.explanationKey),
@@ -282,18 +243,11 @@ export function SttPane() {
           ? t('recordingLimits.providerFixedLimit', {
               max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
             })
-          : isManagedCapability
-            ? t('recordingLimits.currentSelectionWithCloudMax', {
-                current: formatRecordingDuration(recordingLimit.effectiveMaxSeconds, t),
-                max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
-              })
-            : isManagedFallback
-              ? t(recordingLimit.capability.explanationKey)
-              : t('recordingLimits.currentSelectionWithLimit', {
-                  current: formatRecordingDuration(recordingLimit.effectiveMaxSeconds, t),
-                  max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
-                  reason: t(recordingLimit.capability.explanationKey),
-                })
+          : t('recordingLimits.currentSelectionWithLimit', {
+              current: formatRecordingDuration(recordingLimit.effectiveMaxSeconds, t),
+              max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
+              reason: t(recordingLimit.capability.explanationKey),
+            })
         : t(recordingLimit.capability.explanationKey)
     : null
 
@@ -333,11 +287,7 @@ export function SttPane() {
                     stt_custom_base_url: config.stt_custom_base_url || CUSTOM_STT_DEFAULTS.baseUrl,
                     stt_custom_model: config.stt_custom_model || CUSTOM_STT_DEFAULTS.model,
                   }
-                : provider === 'volcengine-doubao' && !config.stt_volcengine_resource_id
-                  ? {
-                      stt_volcengine_resource_id: VOLCENGINE_STT_RESOURCES[0].value,
-                    }
-                  : {}),
+                : {}),
             })
             setSttTestStatus('idle')
             setSttLatencyMs(null)
@@ -353,30 +303,7 @@ export function SttPane() {
         </select>
       </FormField>
 
-      {isCloud ? (
-        <div className="border border-border rounded-[10px] px-3 py-3 space-y-2">
-          <div className="flex items-center gap-2 text-[13px]">
-            <Crown size={14} className="text-accent" />
-            <span className="text-text-primary font-medium">{t('settings.cloudSttPro')}</span>
-          </div>
-          {!user ? (
-            <p className="text-[12px] text-text-secondary">{t('settings.sttSignInHint')}</p>
-          ) : !hasCloudAccess ? (
-            <div className="space-y-2">
-              <p className="text-[12px] text-text-secondary">{t('settings.sttUpgradeHint')}</p>
-              <button
-                type="button"
-                onClick={goUpgrade}
-                className="rounded-[8px] border border-accent bg-accent px-3 py-1.5 text-[12px] font-medium text-white hover:bg-accent-hover"
-              >
-                {t('nav.upgrade')}
-              </button>
-            </div>
-          ) : (
-            <p className="text-[12px] text-green-500">{t('settings.sttProActive')}</p>
-          )}
-        </div>
-      ) : isAppleSpeech ? (
+      {isAppleSpeech ? (
         <FormField label={t('providers.stt.appleSpeech')}>
           <div className="flex gap-2">
             <div className="flex-1 px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary">
@@ -520,54 +447,6 @@ export function SttPane() {
             </>
           )}
 
-          {isVolcengineDoubao && (
-            <FormField label={t('settings.volcengineResourceId')}>
-              <select
-                aria-label={t('settings.volcengineResourceId')}
-                value={volcengineResourceId}
-                onChange={(e) => {
-                  updateConfig({ stt_volcengine_resource_id: e.target.value })
-                  setSttTestStatus('idle')
-                  setSttLatencyMs(null)
-                  setTestErrorMessage(null)
-                  setCredentialErrorMessage(null)
-                }}
-                className="w-full px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary outline-none focus:border-border-focus transition-colors"
-              >
-                {VOLCENGINE_STT_RESOURCES.map((resource) => (
-                  <option key={resource.value} value={resource.value}>
-                    {t(resource.labelKey)}
-                  </option>
-                ))}
-              </select>
-            </FormField>
-          )}
-
-          {isAliyunQwen3 && (
-            <FormField label={t('settings.aliyunQwenRegion')}>
-              <select
-                aria-label={t('settings.aliyunQwenRegion')}
-                value={config.stt_aliyun_qwen_region}
-                onChange={(e) => {
-                  updateConfig({
-                    stt_aliyun_qwen_region: e.target.value as typeof config.stt_aliyun_qwen_region,
-                  })
-                  setSttTestStatus('idle')
-                  setSttLatencyMs(null)
-                  setTestErrorMessage(null)
-                  setCredentialErrorMessage(null)
-                }}
-                className="w-full px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary outline-none focus:border-border-focus transition-colors"
-              >
-                <option value="china-mainland">{t('settings.aliyunQwenRegionChina')}</option>
-                <option value="international">{t('settings.aliyunQwenRegionInternational')}</option>
-              </select>
-              <p className="text-[11px] text-text-tertiary mt-1.5">
-                {t('settings.aliyunQwenRegionHint')}
-              </p>
-            </FormField>
-          )}
-
           <FormField
             label={isCustomWhisper ? t('settings.customSttApiKeyOptional') : t('settings.apiKey')}
           >
@@ -613,11 +492,6 @@ export function SttPane() {
               </p>
             ) : (
               <p className="text-[11px] text-text-tertiary mt-1.5">{t('settings.storedLocally')}</p>
-            )}
-            {isVolcengineDoubao && (
-              <p className="text-[11px] text-text-tertiary mt-1.5">
-                {t('settings.volcengineSttKeyHint')}
-              </p>
             )}
           </FormField>
         </>

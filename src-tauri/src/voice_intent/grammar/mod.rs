@@ -3,19 +3,13 @@ mod zh_hans;
 mod zh_hant;
 
 use super::normalize::NormalizedUtterance;
-use super::{CommandLocale, SearchProvider};
+use super::CommandLocale;
 
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub(crate) enum CommandMatch<T> {
     NoMatch,
     MissingPayload,
     Matched(T),
-}
-
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub(crate) struct SearchMatch {
-    pub provider: SearchProvider,
-    pub query: String,
 }
 
 pub(crate) fn match_draft(
@@ -50,17 +44,6 @@ pub(crate) fn matches_informational(locale: CommandLocale, view: &NormalizedUtte
         CommandLocale::En => en::matches_informational(view),
         CommandLocale::ZhHans => zh_hans::matches_informational(view),
         CommandLocale::ZhHant => zh_hant::matches_informational(view),
-    }
-}
-
-pub(crate) fn match_search(
-    locale: CommandLocale,
-    view: &NormalizedUtterance<'_>,
-) -> CommandMatch<SearchMatch> {
-    match locale {
-        CommandLocale::En => en::match_search(view),
-        CommandLocale::ZhHans => zh_hans::match_search(view),
-        CommandLocale::ZhHant => zh_hant::match_search(view),
     }
 }
 

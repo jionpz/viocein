@@ -70,12 +70,15 @@ impl LlmProvider for OpenAiProvider {
             "content": format!("<transcription>\n{}\n</transcription>", req.raw_text)
         }));
 
-        let api_kind = protocol::detect_api_kind(&config.provider, &config.base_url);
-        let endpoint = protocol::chat_endpoint(&config.provider, &config.base_url)
-            .map_err(AppError::Config)?;
+        let base_url = config.base_url.trim().to_string();
+        super::validate_provider_base_url(&config.provider, &base_url).map_err(AppError::Config)?;
+
+        let api_kind = protocol::detect_api_kind(&config.provider, &base_url);
+        let endpoint =
+            protocol::chat_endpoint(&config.provider, &base_url).map_err(AppError::Config)?;
         let mut body = protocol::build_chat_body(
             &config.provider,
-            &config.base_url,
+            &base_url,
             &config.model,
             messages,
             config.max_tokens,
@@ -112,13 +115,13 @@ impl LlmProvider for OpenAiProvider {
             match protocol::apply_auth_headers(
                 request,
                 &config.provider,
-                &config.base_url,
+                &base_url,
                 &config.api_key,
             )
             .json(&body)
             .timeout(protocol::request_timeout(
                 &config.provider,
-                &config.base_url,
+                &base_url,
                 &config.model,
             ))
             .send()

@@ -336,8 +336,6 @@ pub struct AppConfig {
     pub stt_custom_preset: String,
     pub stt_custom_base_url: String,
     pub stt_custom_model: String,
-    pub stt_volcengine_resource_id: String,
-    pub stt_aliyun_qwen_region: String,
     pub llm_provider: String,
     pub llm_api_key: String,
     pub llm_model: String,
@@ -373,7 +371,6 @@ pub struct AppConfig {
     pub recording_limit_mode: crate::stt::capabilities::RecordingLimitMode,
     pub custom_recording_limit_seconds: u32,
     pub max_recording_seconds: u32,
-    pub managed_stt_capability_state: Option<crate::stt::capabilities::ManagedSttCapabilityState>,
     pub history_enabled: bool,
     pub history_retention_days: u32,
     pub history_max_entries: u32,
@@ -384,21 +381,17 @@ pub struct AppConfig {
 impl Default for AppConfig {
     fn default() -> Self {
         Self {
-            stt_provider: "glm-asr".to_string(),
+            stt_provider: crate::stt::config::CUSTOM_WHISPER_PROVIDER.to_string(),
             stt_api_key: String::new(),
             stt_custom_api_key: String::new(),
             stt_language: "multi".to_string(),
             stt_custom_preset: crate::stt::config::CUSTOM_WHISPER_PRESET_SPEACHES.to_string(),
             stt_custom_base_url: crate::stt::config::DEFAULT_CUSTOM_WHISPER_BASE_URL.to_string(),
             stt_custom_model: crate::stt::config::DEFAULT_CUSTOM_WHISPER_MODEL.to_string(),
-            stt_volcengine_resource_id: crate::stt::volcengine::VOLCENGINE_SEEDASR_RESOURCE_ID
-                .to_string(),
-            stt_aliyun_qwen_region:
-                crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_CHINA_MAINLAND.to_string(),
-            llm_provider: "openrouter".to_string(),
+            llm_provider: crate::llm::COMPANY_PROVIDER.to_string(),
             llm_api_key: String::new(),
-            llm_model: "google/gemini-2.5-flash".to_string(),
-            llm_base_url: "https://openrouter.ai/api/v1".to_string(),
+            llm_model: "default".to_string(),
+            llm_base_url: String::new(),
             polish_enabled: true,
             context_adaptation_enabled: true,
             voice_routing_flags: crate::voice_intent::VoiceRoutingFlags::default(),
@@ -430,7 +423,6 @@ impl Default for AppConfig {
             recording_limit_mode: crate::stt::capabilities::RecordingLimitMode::Auto,
             custom_recording_limit_seconds: 600,
             max_recording_seconds: 30,
-            managed_stt_capability_state: None,
             history_enabled: true,
             history_retention_days: 0,
             history_max_entries: DEFAULT_HISTORY_MAX_ENTRIES,
@@ -556,15 +548,29 @@ impl AppConfig {
         self.hotkey_mode = self.hotkeys.dictation_mode.clone();
     }
 
-    pub(crate) fn normalize_values(&mut self) {
+    /// Coerce legacy/remote provider selections to the providers compiled into
+    /// the internal local-only build. Without this, a config saved by an older
+    /// version (e.g. `deepgram` or a cloud LLM) would make the settings pane and
+    /// the pipeline fail closed with an unusable selection.
+    fn normalize_provider_selection(&mut self) {
         if !matches!(
-            self.stt_aliyun_qwen_region.as_str(),
-            crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_CHINA_MAINLAND
-                | crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_INTERNATIONAL
+            self.stt_provider.as_str(),
+            crate::stt::config::CUSTOM_WHISPER_PROVIDER | crate::stt::config::APPLE_SPEECH_PROVIDER
         ) {
-            self.stt_aliyun_qwen_region =
-                crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_CHINA_MAINLAND.to_string();
+            self.stt_provider = crate::stt::config::CUSTOM_WHISPER_PROVIDER.to_string();
         }
+        if !crate::llm::is_supported_provider(&self.llm_provider) {
+            self.llm_provider = crate::llm::COMPANY_PROVIDER.to_string();
+        }
+        self.llm_base_url = self.llm_base_url.trim().to_string();
+        self.llm_model = self.llm_model.trim().to_string();
+        if self.llm_model.is_empty() {
+            self.llm_model = "default".to_string();
+        }
+    }
+
+    pub(crate) fn normalize_values(&mut self) {
+        self.normalize_provider_selection();
         self.polish_style = normalize_polish_style(&self.polish_style).to_string();
         self.polish_custom_prompt = sanitize_polish_custom_prompt(&self.polish_custom_prompt);
         self.polish_chinese_script = "preserve".to_string();
@@ -1251,7 +1257,6 @@ pub struct HistoryEntry {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum HistoryProviderKind {
-    ManagedCloud,
     Byok,
     Local,
 }
@@ -1259,7 +1264,6 @@ pub enum HistoryProviderKind {
 impl HistoryProviderKind {
     fn as_db_value(self) -> &'static str {
         match self {
-            Self::ManagedCloud => "managed_cloud",
             Self::Byok => "byok",
             Self::Local => "local",
         }
@@ -1267,7 +1271,6 @@ impl HistoryProviderKind {
 
     fn from_db_value(value: &str) -> Self {
         match value {
-            "managed_cloud" => Self::ManagedCloud,
             "byok" => Self::Byok,
             _ => Self::Local,
         }
@@ -1493,171 +1496,6 @@ impl HistoryStore {
         conn.execute("DELETE FROM history", [])?;
         Ok(())
     }
-
-    /// Restores cloud backup sections in one SQLite transaction. Dictionary and
-    /// correction rows live in the same database, so using the history
-    /// connection here prevents a partially restored local data set.
-    pub async fn restore_backup_data(
-        &self,
-        history: Option<Vec<HistoryEntry>>,
-        dictionary: Option<Vec<DictionaryEntry>>,
-        correction_rules: Option<Vec<CorrectionRule>>,
-        policy: &HistoryRetentionPolicy,
-        now_iso: &str,
-    ) -> Result<()> {
-        if history
-            .as_ref()
-            .is_some_and(|entries| entries.len() > DEFAULT_HISTORY_MAX_ENTRIES as usize)
-        {
-            anyhow::bail!("backup_history_too_large");
-        }
-        let dictionary = dictionary.map(prepare_backup_dictionary).transpose()?;
-        let correction_rules = correction_rules
-            .map(prepare_backup_correction_rules)
-            .transpose()?;
-
-        let mut conn = self.conn.lock().unwrap_or_else(|error| error.into_inner());
-        let transaction = conn.transaction()?;
-
-        if let Some(entries) = history {
-            transaction.execute("DELETE FROM history", [])?;
-            if policy.enabled {
-                let max_entries = policy.max_entries.clamp(1, DEFAULT_HISTORY_MAX_ENTRIES) as usize;
-                let cutoff = if policy.retention_days > 0 {
-                    chrono::NaiveDateTime::parse_from_str(now_iso, "%Y-%m-%dT%H:%M:%S")
-                        .ok()
-                        .map(|now| now - chrono::Duration::days(policy.retention_days as i64))
-                } else {
-                    None
-                };
-                let mut entries = entries
-                    .into_iter()
-                    .filter(|entry| {
-                        cutoff.is_none_or(|cutoff| {
-                            chrono::NaiveDateTime::parse_from_str(
-                                &entry.created_at,
-                                "%Y-%m-%dT%H:%M:%S",
-                            )
-                            .is_ok_and(|created_at| created_at >= cutoff)
-                        })
-                    })
-                    .take(max_entries)
-                    .collect::<Vec<_>>();
-                entries.reverse();
-                for entry in entries {
-                    transaction.execute(
-                        "INSERT INTO history (
-                            created_at,
-                            app_name,
-                            app_type,
-                            context_profile_id,
-                            context_label,
-                            context_icon_key,
-                            context_family,
-                            browser_access_status,
-                            provider_kind,
-                            raw_text,
-                            polished_text,
-                            language,
-                            duration_ms,
-                            active_scene_id,
-                            active_scene_source,
-                            active_scene_name,
-                            active_scene_prompt_chars,
-                            active_scene_prompt_truncated,
-                            output_status,
-                            output_error
-                        ) VALUES (?1, '', '', ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18)",
-                        rusqlite::params![
-                            entry.created_at,
-                            entry.context_profile_id,
-                            entry.context_label,
-                            entry.context_icon_key,
-                            context_family_db_value(entry.context_family),
-                            entry.browser_access_status.as_history_value(),
-                            entry.provider_kind.as_db_value(),
-                            entry.raw_text,
-                            entry.polished_text,
-                            entry.language,
-                            entry.duration_ms,
-                            entry.active_scene_id,
-                            entry.active_scene_source,
-                            entry.active_scene_name,
-                            entry.active_scene_prompt_chars,
-                            entry.active_scene_prompt_truncated,
-                            entry.output_status,
-                            entry.output_error,
-                        ],
-                    )?;
-                }
-            }
-        }
-
-        if let Some(entries) = dictionary {
-            transaction.execute("DELETE FROM dictionary", [])?;
-            for (word, pronunciation) in entries {
-                transaction.execute(
-                    "INSERT INTO dictionary (word, pronunciation) VALUES (?1, ?2)",
-                    rusqlite::params![word, pronunciation],
-                )?;
-            }
-        }
-
-        if let Some(rules) = correction_rules {
-            transaction.execute("DELETE FROM correction_rules", [])?;
-            for (pattern, replacement, enabled) in rules {
-                transaction.execute(
-                    "INSERT INTO correction_rules (pattern, replacement, enabled) VALUES (?1, ?2, ?3)",
-                    rusqlite::params![pattern, replacement, if enabled { 1 } else { 0 }],
-                )?;
-            }
-        }
-
-        transaction.commit()?;
-        Ok(())
-    }
-}
-
-fn prepare_backup_dictionary(
-    entries: Vec<DictionaryEntry>,
-) -> Result<Vec<(String, Option<String>)>> {
-    if entries.len() > MAX_BACKUP_DICTIONARY_ENTRIES {
-        anyhow::bail!("backup_dictionary_too_large");
-    }
-    let mut seen = HashSet::new();
-    let mut prepared = Vec::with_capacity(entries.len());
-    for entry in entries {
-        let word = validate_dictionary_text(&entry.word, 100, "dictionary_word")?;
-        let pronunciation = entry
-            .pronunciation
-            .as_deref()
-            .map(|value| validate_dictionary_text(value, 100, "dictionary_pronunciation"))
-            .transpose()?
-            .filter(|value| !value.is_empty());
-        if seen.insert(normalized_dictionary_identity(&word)) {
-            prepared.push((word, pronunciation));
-        }
-    }
-    Ok(prepared)
-}
-
-fn prepare_backup_correction_rules(
-    entries: Vec<CorrectionRule>,
-) -> Result<Vec<(String, String, bool)>> {
-    if entries.len() > MAX_BACKUP_CORRECTION_RULES {
-        anyhow::bail!("backup_corrections_too_large");
-    }
-    let mut seen = HashSet::new();
-    let mut prepared = Vec::with_capacity(entries.len());
-    for entry in entries {
-        let pattern = validate_dictionary_text(&entry.pattern, 120, "correction_pattern")?;
-        let replacement =
-            validate_dictionary_text(&entry.replacement, 120, "correction_replacement")?;
-        if seen.insert(normalized_correction_identity(&pattern, &replacement)) {
-            prepared.push((pattern, replacement, entry.enabled));
-        }
-    }
-    Ok(prepared)
 }
 
 fn ensure_history_optional_columns(conn: &Connection) -> Result<()> {
@@ -2141,34 +1979,6 @@ mod tests {
         assert_eq!(config.stt_provider, "deepgram");
         assert_eq!(config.stt_api_key, "hosted-secret");
         assert_eq!(config.stt_custom_api_key, "");
-        assert_eq!(
-            config.stt_volcengine_resource_id,
-            crate::stt::volcengine::VOLCENGINE_SEEDASR_RESOURCE_ID
-        );
-        assert_eq!(
-            config.stt_aliyun_qwen_region,
-            crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_CHINA_MAINLAND
-        );
-    }
-
-    #[test]
-    fn app_config_preserves_supported_qwen_region_and_normalizes_unknown_values() {
-        let international = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "aliyun-qwen3-asr",
-            "stt_aliyun_qwen_region": "international"
-        }))
-        .unwrap();
-        assert_eq!(international.stt_aliyun_qwen_region, "international");
-
-        let unknown = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "aliyun-qwen3-asr",
-            "stt_aliyun_qwen_region": "unknown"
-        }))
-        .unwrap();
-        assert_eq!(
-            unknown.stt_aliyun_qwen_region,
-            crate::stt::aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_REGION_CHINA_MAINLAND
-        );
     }
 
     #[test]
@@ -2206,7 +2016,7 @@ mod tests {
     #[test]
     fn recording_limit_migrates_historical_default_to_provider_auto() {
         let config = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "groq-whisper",
+            "stt_provider": "custom-whisper",
             "max_recording_seconds": 30
         }))
         .unwrap();
@@ -2216,13 +2026,13 @@ mod tests {
             crate::stt::capabilities::RecordingLimitMode::Auto
         );
         assert_eq!(config.custom_recording_limit_seconds, 600);
-        assert_eq!(config.max_recording_seconds, 600);
+        assert_eq!(config.max_recording_seconds, 120);
     }
 
     #[test]
     fn recording_limit_migrates_historical_custom_value_without_losing_intent() {
         let config = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "groq-whisper",
+            "stt_provider": "custom-whisper",
             "max_recording_seconds": 120
         }))
         .unwrap();
@@ -2238,7 +2048,7 @@ mod tests {
     #[test]
     fn recording_limit_migrates_zero_to_a_safe_auto_default() {
         let config = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "deepgram",
+            "stt_provider": "custom-whisper",
             "max_recording_seconds": 0
         }))
         .unwrap();
@@ -2248,13 +2058,13 @@ mod tests {
             crate::stt::capabilities::RecordingLimitMode::Auto
         );
         assert_eq!(config.custom_recording_limit_seconds, 600);
-        assert_eq!(config.max_recording_seconds, 600);
+        assert_eq!(config.max_recording_seconds, 120);
     }
 
     #[test]
     fn recording_limit_clamps_the_compatibility_mirror_but_preserves_new_user_intent_on_load() {
         let config = AppConfig::from_stored_value(serde_json::json!({
-            "stt_provider": "glm-asr",
+            "stt_provider": "custom-whisper",
             "recording_limit_mode": "custom",
             "custom_recording_limit_seconds": 9999,
             "max_recording_seconds": 9999
@@ -2266,7 +2076,7 @@ mod tests {
             crate::stt::capabilities::RecordingLimitMode::Custom
         );
         assert_eq!(config.custom_recording_limit_seconds, 9999);
-        assert_eq!(config.max_recording_seconds, 30);
+        assert_eq!(config.max_recording_seconds, 720);
     }
 
     #[test]
@@ -2288,7 +2098,6 @@ mod tests {
                 draft_insert: false,
                 rewrite_selection: true,
                 translate_selection: true,
-                search: true,
             }
         );
     }
@@ -3138,7 +2947,8 @@ mod tests {
 
         let config = AppConfig::from_stored_value(value).unwrap();
 
-        assert_eq!(config.stt_provider, "deepgram");
+        // Removed remote providers are migrated to the local default.
+        assert_eq!(config.stt_provider, "custom-whisper");
         assert_eq!(config.stt_api_key, "hosted-secret");
         assert!(!config.capsule_auto_hide);
     }
@@ -3249,20 +3059,6 @@ mod tests {
         DictionaryStore::new(path).unwrap()
     }
 
-    fn temp_backup_stores(name: &str) -> (HistoryStore, DictionaryStore) {
-        let path = std::env::temp_dir().join(format!(
-            "opentypeless-backup-test-{}-{}.sqlite",
-            name,
-            std::time::SystemTime::now()
-                .duration_since(std::time::UNIX_EPOCH)
-                .unwrap()
-                .as_nanos()
-        ));
-        let history = HistoryStore::new(path.clone()).unwrap();
-        let dictionary = DictionaryStore::new(path).unwrap();
-        (history, dictionary)
-    }
-
     #[tokio::test]
     async fn history_store_respects_disabled_policy() {
         let store = temp_history_store("disabled");
@@ -3330,95 +3126,6 @@ mod tests {
         let entries = store.list(10, 0).await.unwrap();
         assert_eq!(entries.len(), 1);
         assert_eq!(entries[0].polished_text, "polished 2");
-    }
-
-    #[tokio::test]
-    async fn backup_restore_replaces_all_requested_data_in_one_transaction() {
-        let (history, dictionary) = temp_backup_stores("replace");
-        history
-            .add(test_history_entry(99, "2026-07-01T00:00:00"))
-            .await
-            .unwrap();
-        dictionary.add("Old word", None).await.unwrap();
-        dictionary
-            .add_correction("old phrase", "Old phrase")
-            .await
-            .unwrap();
-        let policy = HistoryRetentionPolicy {
-            enabled: true,
-            max_entries: 2,
-            retention_days: 0,
-        };
-
-        history
-            .restore_backup_data(
-                Some(vec![
-                    test_history_entry(3, "2026-07-03T00:00:00"),
-                    test_history_entry(2, "2026-07-02T00:00:00"),
-                    test_history_entry(1, "2026-07-01T00:00:00"),
-                ]),
-                Some(vec![
-                    DictionaryEntry {
-                        id: 20,
-                        word: "OpenTypeless".to_string(),
-                        pronunciation: None,
-                    },
-                    DictionaryEntry {
-                        id: 21,
-                        word: " opentypeless ".to_string(),
-                        pronunciation: Some("duplicate".to_string()),
-                    },
-                ]),
-                Some(vec![CorrectionRule {
-                    id: 30,
-                    pattern: "open type less".to_string(),
-                    replacement: "OpenTypeless".to_string(),
-                    enabled: false,
-                }]),
-                &policy,
-                "2026-07-13T00:00:00",
-            )
-            .await
-            .unwrap();
-
-        let restored_history = history.list(10, 0).await.unwrap();
-        assert_eq!(restored_history.len(), 2);
-        assert_eq!(restored_history[0].polished_text, "polished 3");
-        assert_eq!(restored_history[1].polished_text, "polished 2");
-        let restored_dictionary = dictionary.list().await.unwrap();
-        assert_eq!(restored_dictionary.len(), 1);
-        assert_eq!(restored_dictionary[0].word, "OpenTypeless");
-        let restored_rules = dictionary.correction_rules().await.unwrap();
-        assert_eq!(restored_rules.len(), 1);
-        assert!(!restored_rules[0].enabled);
-    }
-
-    #[tokio::test]
-    async fn invalid_backup_dictionary_leaves_existing_data_unchanged() {
-        let (history, dictionary) = temp_backup_stores("validation");
-        history
-            .add(test_history_entry(1, "2026-07-01T00:00:00"))
-            .await
-            .unwrap();
-        dictionary.add("Existing", None).await.unwrap();
-
-        let result = history
-            .restore_backup_data(
-                Some(vec![test_history_entry(2, "2026-07-02T00:00:00")]),
-                Some(vec![DictionaryEntry {
-                    id: 2,
-                    word: "x".repeat(101),
-                    pronunciation: None,
-                }]),
-                None,
-                &HistoryRetentionPolicy::default(),
-                "2026-07-13T00:00:00",
-            )
-            .await;
-
-        assert_eq!(result.unwrap_err().to_string(), "dictionary_word_too_long");
-        assert_eq!(history.list(10, 0).await.unwrap()[0].raw_text, "raw 1");
-        assert_eq!(dictionary.list().await.unwrap()[0].word, "Existing");
     }
 
     #[tokio::test]
@@ -3594,7 +3301,7 @@ mod tests {
         entry.context_label = "GitHub".to_string();
         entry.context_icon_key = "github".to_string();
         entry.context_family = ContextFamily::DeveloperCollaboration;
-        entry.provider_kind = HistoryProviderKind::ManagedCloud;
+        entry.provider_kind = HistoryProviderKind::Byok;
         store.add(entry).await.unwrap();
 
         let entries = store.list(10, 0).await.unwrap();
@@ -3603,7 +3310,7 @@ mod tests {
             entries[0].context_family,
             ContextFamily::DeveloperCollaboration
         );
-        assert_eq!(entries[0].provider_kind, HistoryProviderKind::ManagedCloud);
+        assert_eq!(entries[0].provider_kind, HistoryProviderKind::Byok);
 
         let conn = store.conn.lock().unwrap();
         let raw_values: (String, String) = conn

@@ -89,7 +89,6 @@ function askResult(
     output: 'popupAnswer' as const,
     usedSelectedText: false,
     selectedTextTruncated: false,
-    searchProvider: null,
     requestedPlacement: 'popup_answer' as const,
     actualPlacement: 'popup_answer' as const,
     fallbackReason: null,
@@ -182,7 +181,7 @@ describe('AskPanel', () => {
     expect(screen.queryByText(/grammar/i)).toBeNull()
   })
 
-  it('shows provider-only search status and never renders query URL or debug metadata', async () => {
+  it('never renders stray query, URL or debug metadata from a result payload', async () => {
     render(<AskPanel />)
 
     await waitFor(() => {
@@ -190,14 +189,8 @@ describe('AskPanel', () => {
     })
     tauriEventMock.emit('ask:result', {
       ...askResult({
-        question: 'search private launch plan on Google',
-        answer: 'Opened Google search.',
-        intent: 'search',
-        output: 'openedSearch',
-        requestedPlacement: 'open_url',
-        actualPlacement: 'open_url',
-        fallbackReason: null,
-        searchProvider: 'Google',
+        question: 'Summarize the notes.',
+        answer: 'It stays a local answer.',
       }),
       query: 'private launch plan',
       searchUrl: 'https://www.google.com/search?q=private+launch+plan',
@@ -205,7 +198,7 @@ describe('AskPanel', () => {
       grammarLocale: 'en',
     })
 
-    expect(await screen.findByText('Opened Google search')).toBeDefined()
+    expect(await screen.findByText('It stays a local answer.')).toBeDefined()
     expect(screen.queryByText(/private launch plan/i)).toBeNull()
     expect(screen.queryByText(/google\.com/i)).toBeNull()
     expect(screen.queryByText(/^en$/i)).toBeNull()
@@ -422,7 +415,6 @@ describe('AskPanel', () => {
       output: 'popupAnswer',
       usedSelectedText: false,
       selectedTextTruncated: false,
-      searchProvider: null,
       requestedPlacement: 'popup_answer',
       actualPlacement: 'popup_answer',
       fallbackReason: null,

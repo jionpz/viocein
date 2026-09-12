@@ -2,12 +2,11 @@ pub mod executor;
 pub mod grammar;
 mod guards;
 mod normalize;
-pub mod search;
 pub mod types;
 
 pub use types::*;
 
-use grammar::{CommandMatch, SearchMatch};
+use grammar::CommandMatch;
 use guards::{guard_reason, has_any_supported_command_signal, has_command_signal};
 use normalize::NormalizedUtterance;
 
@@ -27,7 +26,6 @@ pub fn plan_voice_provider_work(
     intent: &VoiceIntent,
 ) -> VoiceProviderWorkPlan {
     let provider_input = match intent.kind {
-        VoiceIntentKind::Search => None,
         VoiceIntentKind::DraftInsert => intent.payload.clone(),
         _ => Some(utterance.to_string()),
     };
@@ -117,7 +115,6 @@ fn route_dictate(
                 VoiceIntentKind::DraftInsert,
                 VoiceOutputPlacement::InsertAtCursor,
                 grammar::exact_confidence(view),
-                None,
                 Some(payload),
                 Some(locale),
                 None,
@@ -157,7 +154,6 @@ fn route_dictate(
             VoiceOutputPlacement::ReplaceSelection,
             grammar::exact_confidence(view),
             None,
-            None,
             Some(locale),
             None,
         );
@@ -175,7 +171,6 @@ fn route_dictate(
             VoiceIntentKind::RewriteSelection,
             VoiceOutputPlacement::ReplaceSelection,
             grammar::exact_confidence(view),
-            None,
             None,
             Some(locale),
             None,
@@ -207,43 +202,11 @@ fn route_ask(
         );
     }
 
-    match grammar::match_search(locale, view) {
-        CommandMatch::Matched(SearchMatch { provider, query }) if request.flags.search => {
-            return intent(
-                VoiceIntentKind::Search,
-                VoiceOutputPlacement::OpenUrl,
-                grammar::exact_confidence(view),
-                Some(provider),
-                Some(query),
-                Some(locale),
-                None,
-            )
-        }
-        CommandMatch::Matched(_) => {
-            return fallback_intent(
-                VoiceMode::Ask,
-                false,
-                Some(locale),
-                Some(RouteFallbackReason::FeatureDisabled),
-            )
-        }
-        CommandMatch::MissingPayload => {
-            return fallback_intent(
-                VoiceMode::Ask,
-                false,
-                Some(locale),
-                Some(RouteFallbackReason::MissingPayload),
-            )
-        }
-        CommandMatch::NoMatch => {}
-    }
-
     match grammar::match_draft(locale, view) {
         CommandMatch::Matched(payload) if request.flags.draft_insert => intent(
             VoiceIntentKind::DraftInsert,
             VoiceOutputPlacement::InsertAtCursor,
             grammar::exact_confidence(view),
-            None,
             Some(payload),
             Some(locale),
             None,
@@ -286,14 +249,12 @@ fn route_translate_mode(request: &VoiceRouteRequest<'_>) -> VoiceIntent {
             None,
             None,
             None,
-            None,
         );
     }
     intent(
         VoiceIntentKind::TranslateInsert,
         VoiceOutputPlacement::InsertAtCursor,
         1.0,
-        None,
         None,
         None,
         None,
@@ -329,7 +290,6 @@ fn fallback_intent(
         placement,
         if reason.is_some() { 0.0 } else { 1.0 },
         None,
-        None,
         locale,
         reason,
     )
@@ -340,15 +300,12 @@ fn intent(
     kind: VoiceIntentKind,
     placement: VoiceOutputPlacement,
     confidence: f32,
-    provider: Option<SearchProvider>,
     payload: Option<String>,
     locale: Option<CommandLocale>,
     reason: Option<RouteFallbackReason>,
 ) -> VoiceIntent {
-    VoiceIntent::from_parts(
-        kind, placement, confidence, provider, payload, locale, reason,
-    )
-    .expect("router must construct only valid voice intents")
+    VoiceIntent::from_parts(kind, placement, confidence, payload, locale, reason)
+        .expect("router must construct only valid voice intents")
 }
 
 fn resolve_locale(mode: SpeechLanguageMode<'_>, utterance: &str) -> LocaleResolution {
@@ -635,16 +592,6 @@ mod tests {
                 restore_target: true,
             },
             Case {
-                mode: VoiceMode::Ask,
-                utterance: "search Rust Tauri hotkeys on Google",
-                has_selection: false,
-                kind: VoiceIntentKind::Search,
-                provider_calls: 0,
-                provider_input: None,
-                allow_streaming: false,
-                restore_target: false,
-            },
-            Case {
                 mode: VoiceMode::Translate,
                 utterance: "See you tomorrow",
                 has_selection: false,
@@ -711,7 +658,6 @@ mod tests {
         flags: VoiceRoutingFlags,
         expected_kind: VoiceIntentKind,
         expected_placement: VoiceOutputPlacement,
-        expected_provider: Option<SearchProvider>,
         expected_payload: Option<String>,
         expected_fallback_reason: Option<RouteFallbackReason>,
         destructive_blocker: bool,
@@ -743,11 +689,6 @@ mod tests {
                 "case {}",
                 case.id
             );
-            assert_eq!(
-                result.search_provider, case.expected_provider,
-                "case {}",
-                case.id
-            );
             assert_eq!(result.payload, case.expected_payload, "case {}", case.id);
             assert_eq!(
                 result.fallback_reason, case.expected_fallback_reason,
@@ -763,7 +704,6 @@ mod tests {
                     VoiceIntentKind::DraftInsert
                         | VoiceIntentKind::RewriteSelection
                         | VoiceIntentKind::TranslateSelection
-                        | VoiceIntentKind::Search
                 ) {
                     destructive_false_positives += 1;
                 }

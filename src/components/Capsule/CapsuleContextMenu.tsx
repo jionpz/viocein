@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next'
-import { Settings, History, LogOut, CircleUser, Crown, AppWindow, Eye, EyeOff } from 'lucide-react'
-import { setCapsuleAutoHide } from '../../lib/tauri'
+import { Settings, History, LogOut, AppWindow, Eye, EyeOff } from 'lucide-react'
+import { quitApp, setCapsuleAutoHide } from '../../lib/tauri'
 import { useAppStore } from '../../stores/appStore'
 
 interface Props {
@@ -60,30 +60,12 @@ export function CapsuleContextMenu({ onClose }: Props) {
         onClose()
       },
     },
-    {
-      icon: CircleUser,
-      label: t('capsule.menu.account'),
-      onClick: () => {
-        openMainWindow('#/account')
-        onClose()
-      },
-    },
-    {
-      icon: Crown,
-      label: t('capsule.menu.upgrade'),
-      onClick: () => {
-        openMainWindow('#/upgrade')
-        onClose()
-      },
-    },
     { type: 'separator' as const },
     {
       icon: LogOut,
       label: t('capsule.menu.exit'),
       onClick: () => {
-        import('@tauri-apps/api/core')
-          .then(({ invoke }) => invoke('plugin:process|exit', { code: 0 }))
-          .catch(() => {})
+        void quitApp().catch(() => {})
         onClose()
       },
     },

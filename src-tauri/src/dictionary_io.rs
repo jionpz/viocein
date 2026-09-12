@@ -833,7 +833,7 @@ dictionary,'=literal,,,,true\n";
         let parsed = ParsedDictionaryImport {
             rows: vec![
                 ParsedDictionaryRow::Dictionary {
-                    word: "ＯＰＥＮＴＹＰＥＬＥＳＳ".to_string(),
+                    word: "ＶＩＯＣＥＩＮ".to_string(),
                     pronunciation: None,
                 },
                 ParsedDictionaryRow::Dictionary {

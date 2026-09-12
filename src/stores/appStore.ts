@@ -13,34 +13,10 @@ export type PipelineState =
 
 export type VoiceMode = 'dictate' | 'ask' | 'translate'
 
-export type SttProvider =
-  | 'deepgram'
-  | 'assemblyai'
-  | 'aliyun-qwen3-asr'
-  | 'volcengine-doubao'
-  | 'glm-asr'
-  | 'openai-whisper'
-  | 'groq-whisper'
-  | 'siliconflow'
-  | 'apple-speech'
-  | 'custom-whisper'
-  | 'cloud'
+export type SttProvider = 'apple-speech' | 'custom-whisper'
 
 export type AliyunQwenRegion = 'china-mainland' | 'international'
-export type LlmProvider =
-  | 'zhipu'
-  | 'deepseek'
-  | 'siliconflow'
-  | 'openai'
-  | 'gemini'
-  | 'moonshot'
-  | 'doubao'
-  | 'qwen'
-  | 'groq'
-  | 'claude'
-  | 'ollama'
-  | 'openrouter'
-  | 'cloud'
+export type LlmProvider = 'company' | 'ollama'
 export type OutputMode = 'keyboard' | 'clipboard'
 export type PasteShortcut = 'ctrlV' | 'ctrlShiftV' | 'shiftInsert'
 export type WindowsSendInputNewlineMode = 'enter' | 'shiftEnter' | 'crlf'
@@ -55,7 +31,7 @@ export type HotkeyMode = 'hold' | 'toggle'
 export type Theme = 'light' | 'dark' | 'system'
 export type PolishChineseScript = 'preserve' | 'simplified' | 'traditional'
 export type PolishStyle = 'minimal' | 'clean' | 'structured' | 'professional'
-export type SceneSource = 'custom' | 'builtin' | 'cloud'
+export type SceneSource = 'custom' | 'builtin'
 export type ContextFamily =
   | 'email'
   | 'work_chat'
@@ -104,7 +80,7 @@ export interface HistoryEntry {
   context_icon_key: string
   context_family: ContextFamily
   browser_access_status: BrowserAccessStatus
-  provider_kind: 'managed_cloud' | 'byok' | 'local'
+  provider_kind: 'byok' | 'local'
   raw_text: string
   polished_text: string
   language: string | null
@@ -180,7 +156,6 @@ export interface VoiceRoutingFlags {
   draft_insert: boolean
   rewrite_selection: boolean
   translate_selection: boolean
-  search: boolean
 }
 
 export interface TranslationConfig {
@@ -300,8 +275,6 @@ interface AppState {
   setOnboardingCompleted: (done: boolean) => void
   onboardingStep: number
   setOnboardingStep: (step: number) => void
-  onboardingMode: 'cloud' | 'byok' | null
-  setOnboardingMode: (mode: 'cloud' | 'byok' | null) => void
 
   // Capsule
   capsuleExpanded: boolean
@@ -721,7 +694,7 @@ function syncHotkeyConfig(previous: AppConfig, partial: Partial<AppConfig>): App
 }
 
 const defaultConfig: AppConfig = {
-  stt_provider: 'glm-asr',
+  stt_provider: 'custom-whisper',
   stt_api_key: '',
   stt_custom_api_key: '',
   stt_custom_preset: 'speaches',
@@ -730,17 +703,16 @@ const defaultConfig: AppConfig = {
   stt_volcengine_resource_id: 'volc.seedasr.sauc.duration',
   stt_aliyun_qwen_region: 'china-mainland',
   stt_language: 'multi',
-  llm_provider: 'openrouter',
+  llm_provider: 'company',
   llm_api_key: '',
-  llm_model: 'google/gemini-2.5-flash',
-  llm_base_url: 'https://openrouter.ai/api/v1',
+  llm_model: 'default',
+  llm_base_url: '',
   polish_enabled: true,
   context_adaptation_enabled: true,
   voice_routing_flags: {
     draft_insert: true,
     rewrite_selection: true,
     translate_selection: true,
-    search: true,
   },
   polish_style: 'clean',
   polish_custom_prompt: '',
@@ -837,8 +809,6 @@ export const useAppStore = create<AppState>((set) => ({
   setOnboardingCompleted: (onboardingCompleted) => set({ onboardingCompleted }),
   onboardingStep: 0,
   setOnboardingStep: (onboardingStep) => set({ onboardingStep }),
-  onboardingMode: null,
-  setOnboardingMode: (onboardingMode) => set({ onboardingMode }),
 
   capsuleExpanded: false,
   setCapsuleExpanded: (capsuleExpanded) => set({ capsuleExpanded }),

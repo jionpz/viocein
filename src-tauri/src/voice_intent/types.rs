@@ -18,7 +18,6 @@ pub enum VoiceIntentKind {
     TranslateSelection,
     AskSelection,
     OpenQuestion,
-    Search,
 }
 
 impl VoiceIntentKind {
@@ -31,7 +30,6 @@ impl VoiceIntentKind {
             Self::TranslateSelection => "translate_selection",
             Self::AskSelection => "ask_selection",
             Self::OpenQuestion => "open_question",
-            Self::Search => "search",
         }
     }
 }
@@ -42,7 +40,6 @@ pub enum VoiceOutputPlacement {
     InsertAtCursor,
     ReplaceSelection,
     PopupAnswer,
-    OpenUrl,
 }
 
 impl VoiceOutputPlacement {
@@ -51,29 +48,6 @@ impl VoiceOutputPlacement {
             Self::InsertAtCursor => "insert_at_cursor",
             Self::ReplaceSelection => "replace_selection",
             Self::PopupAnswer => "popup_answer",
-            Self::OpenUrl => "open_url",
-        }
-    }
-}
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-#[serde(rename_all = "snake_case")]
-pub enum SearchProvider {
-    Google,
-    #[serde(rename = "youtube")]
-    YouTube,
-    Amazon,
-    #[serde(rename = "github")]
-    GitHub,
-}
-
-impl SearchProvider {
-    pub fn display_name(self) -> &'static str {
-        match self {
-            Self::Google => "Google",
-            Self::YouTube => "YouTube",
-            Self::Amazon => "Amazon",
-            Self::GitHub => "GitHub",
         }
     }
 }
@@ -109,7 +83,6 @@ pub struct VoiceIntent {
     pub kind: VoiceIntentKind,
     pub placement: VoiceOutputPlacement,
     pub confidence: f32,
-    pub search_provider: Option<SearchProvider>,
     pub payload: Option<String>,
     pub grammar_locale: Option<CommandLocale>,
     pub fallback_reason: Option<RouteFallbackReason>,
@@ -154,8 +127,6 @@ impl From<&VoiceIntent> for VoiceIntentMetadata {
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum VoiceIntentError {
     InvalidPlacement,
-    MissingSearchProvider,
-    UnexpectedSearchProvider,
     MissingPayload,
 }
 
@@ -163,8 +134,6 @@ impl std::fmt::Display for VoiceIntentError {
     fn fmt(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str(match self {
             Self::InvalidPlacement => "voice intent kind does not allow this output placement",
-            Self::MissingSearchProvider => "search intent requires a provider",
-            Self::UnexpectedSearchProvider => "non-search intent cannot carry a search provider",
             Self::MissingPayload => "voice intent requires a non-empty payload",
         })
     }
@@ -178,7 +147,6 @@ impl VoiceIntent {
         kind: VoiceIntentKind,
         placement: VoiceOutputPlacement,
         confidence: f32,
-        search_provider: Option<SearchProvider>,
         payload: Option<String>,
         grammar_locale: Option<CommandLocale>,
         fallback_reason: Option<RouteFallbackReason>,
@@ -193,20 +161,13 @@ impl VoiceIntent {
             VoiceIntentKind::AskSelection | VoiceIntentKind::OpenQuestion => {
                 VoiceOutputPlacement::PopupAnswer
             }
-            VoiceIntentKind::Search => VoiceOutputPlacement::OpenUrl,
         };
         if placement != required_placement {
             return Err(VoiceIntentError::InvalidPlacement);
         }
 
-        match (kind, search_provider) {
-            (VoiceIntentKind::Search, None) => return Err(VoiceIntentError::MissingSearchProvider),
-            (VoiceIntentKind::Search, Some(_)) | (_, None) => {}
-            (_, Some(_)) => return Err(VoiceIntentError::UnexpectedSearchProvider),
-        }
-
         let payload = payload.map(|value| value.trim().to_string());
-        if matches!(kind, VoiceIntentKind::DraftInsert | VoiceIntentKind::Search)
+        if matches!(kind, VoiceIntentKind::DraftInsert)
             && payload.as_deref().is_none_or(str::is_empty)
         {
             return Err(VoiceIntentError::MissingPayload);
@@ -222,7 +183,6 @@ impl VoiceIntent {
             kind,
             placement,
             confidence,
-            search_provider,
             payload,
             grammar_locale,
             fallback_reason,
@@ -242,8 +202,6 @@ pub struct VoiceRoutingFlags {
     pub rewrite_selection: bool,
     #[serde(default = "default_true")]
     pub translate_selection: bool,
-    #[serde(default = "default_true")]
-    pub search: bool,
 }
 
 impl Default for VoiceRoutingFlags {
@@ -252,7 +210,6 @@ impl Default for VoiceRoutingFlags {
             draft_insert: true,
             rewrite_selection: true,
             translate_selection: true,
-            search: true,
         }
     }
 }
@@ -284,7 +241,6 @@ mod tests {
         flags: VoiceRoutingFlags,
         expected_kind: VoiceIntentKind,
         expected_placement: VoiceOutputPlacement,
-        expected_provider: Option<SearchProvider>,
         expected_payload: Option<String>,
         destructive_blocker: bool,
     }
@@ -312,7 +268,6 @@ mod tests {
                 case.flags,
                 case.expected_kind,
                 case.expected_placement,
-                case.expected_provider,
                 case.expected_payload.as_deref(),
             );
         }
@@ -341,14 +296,6 @@ mod tests {
             "replace_selection"
         );
         assert_eq!(
-            serde_json::to_value(SearchProvider::YouTube).unwrap(),
-            "youtube"
-        );
-        assert_eq!(
-            serde_json::to_value(SearchProvider::GitHub).unwrap(),
-            "github"
-        );
-        assert_eq!(
             serde_json::to_value(CommandLocale::ZhHant).unwrap(),
             "zh_hant"
         );
@@ -365,18 +312,6 @@ mod tests {
             VoiceOutputPlacement::PopupAnswer,
             1.0,
             None,
-            None,
-            Some(CommandLocale::En),
-            None,
-        )
-        .is_err());
-
-        assert!(VoiceIntent::from_parts(
-            VoiceIntentKind::Search,
-            VoiceOutputPlacement::InsertAtCursor,
-            1.0,
-            Some(SearchProvider::Google),
-            Some("rust".to_string()),
             Some(CommandLocale::En),
             None,
         )
@@ -384,23 +319,12 @@ mod tests {
     }
 
     #[test]
-    fn voice_intent_types_enforce_provider_and_payload_invariants() {
+    fn voice_intent_types_enforce_payload_invariants() {
         assert!(VoiceIntent::from_parts(
-            VoiceIntentKind::Search,
-            VoiceOutputPlacement::OpenUrl,
+            VoiceIntentKind::DraftInsert,
+            VoiceOutputPlacement::InsertAtCursor,
             1.0,
             None,
-            Some("rust".to_string()),
-            Some(CommandLocale::En),
-            None,
-        )
-        .is_err());
-        assert!(VoiceIntent::from_parts(
-            VoiceIntentKind::Search,
-            VoiceOutputPlacement::OpenUrl,
-            1.0,
-            Some(SearchProvider::Google),
-            Some("  ".to_string()),
             Some(CommandLocale::En),
             None,
         )
@@ -409,18 +333,7 @@ mod tests {
             VoiceIntentKind::DraftInsert,
             VoiceOutputPlacement::InsertAtCursor,
             1.0,
-            None,
-            None,
-            Some(CommandLocale::En),
-            None,
-        )
-        .is_err());
-        assert!(VoiceIntent::from_parts(
-            VoiceIntentKind::OpenQuestion,
-            VoiceOutputPlacement::PopupAnswer,
-            1.0,
-            Some(SearchProvider::GitHub),
-            None,
+            Some("  ".to_string()),
             Some(CommandLocale::En),
             None,
         )
@@ -433,7 +346,6 @@ mod tests {
             VoiceIntentKind::DictateInsert,
             VoiceOutputPlacement::InsertAtCursor,
             4.0,
-            None,
             None,
             None,
             Some(RouteFallbackReason::UnsupportedLocale),
@@ -465,7 +377,6 @@ mod tests {
                 draft_insert: false,
                 rewrite_selection: true,
                 translate_selection: true,
-                search: true,
             }
         );
     }
@@ -476,7 +387,6 @@ mod tests {
             VoiceIntentKind::DraftInsert,
             VoiceOutputPlacement::InsertAtCursor,
             1.0,
-            None,
             Some("private launch details".to_string()),
             Some(CommandLocale::En),
             None,
@@ -509,7 +419,6 @@ mod tests {
             VoiceOutputPlacement::PopupAnswer,
             0.72,
             None,
-            None,
             Some(CommandLocale::ZhHans),
             None,
         )
@@ -523,7 +432,6 @@ mod tests {
             VoiceIntentKind::DictateInsert,
             VoiceOutputPlacement::InsertAtCursor,
             1.0,
-            None,
             None,
             None,
             Some(RouteFallbackReason::Ambiguous),

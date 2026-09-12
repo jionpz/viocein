@@ -88,18 +88,29 @@ vi.mock('../../../lib/tauri', () => ({
   getSttRecordingCapability: vi.fn().mockResolvedValue({
     capability: {
       registryVersion: 1,
-      providerId: 'glm-asr',
+      providerId: 'custom-whisper',
       transport: 'fileUpload',
-      recommendedMaxSeconds: 30,
-      hardMaxSeconds: 30,
+      recommendedMaxSeconds: 120,
+      hardMaxSeconds: 720,
       maxUploadBytes: 24 * 1024 * 1024,
-      source: 'provider',
-      explanationKey: 'recordingLimits.reasons.providerDuration',
+      source: 'unknownUpstream',
+      explanationKey: 'recordingLimits.reasons.unknownUpstream',
     },
     mode: 'auto',
-    requestedSeconds: 30,
-    effectiveMaxSeconds: 30,
+    requestedSeconds: 120,
+    effectiveMaxSeconds: 120,
   }),
+  getSttProviderDiagnostics: vi.fn().mockResolvedValue({
+    provider: 'custom-whisper',
+    kind: 'localCompatible',
+    endpoint: 'http://localhost:8000/v1/audio/transcriptions',
+    model: 'Systran/faster-whisper-large-v3',
+    requiresApiKey: false,
+    apiKeyConfigured: false,
+    ready: true,
+    issues: [],
+  }),
+  benchSttConnection: vi.fn().mockResolvedValue(12),
   updateHotkey: vi.fn().mockResolvedValue(undefined),
   updateAskHotkey: vi.fn().mockResolvedValue(undefined),
   askAnything: vi.fn().mockResolvedValue('A concise answer.'),
@@ -190,8 +201,7 @@ vi.mock('../../../lib/tauri', () => ({
   testLlmConnection: vi.fn().mockResolvedValue(true),
   readCredential: vi.fn().mockResolvedValue(null),
   setCredential: vi.fn().mockResolvedValue(undefined),
-  fetchLlmModels: vi.fn().mockResolvedValue(['gpt-4o', 'gpt-3.5-turbo']),
-  getLlmModelCapability: vi.fn().mockResolvedValue('unknown'),
+  fetchLlmModels: vi.fn().mockResolvedValue(['default']),
   addDictionaryEntry: vi.fn().mockResolvedValue(undefined),
   updateDictionaryEntry: vi.fn().mockResolvedValue(undefined),
   removeDictionaryEntry: vi.fn().mockResolvedValue(undefined),
@@ -222,31 +232,6 @@ vi.mock('../../../lib/tauri', () => ({
 
 vi.mock('../../../components/toast-service', () => ({
   toast: vi.fn(),
-}))
-
-// ─── Mock @tauri-apps/plugin-opener ─────────────────────────────────────────
-vi.mock('@tauri-apps/plugin-opener', () => ({ openUrl: vi.fn() }))
-
-// ─── Mock stores/authStore ────────────────────────────────────────────────────
-const mockAuthState = {
-  user: null,
-  plan: 'free',
-  source: 'free',
-  cloudWordsLimit: 0,
-  licenseStatus: null,
-}
-
-vi.mock('../../../stores/authStore', () => ({
-  hasManagedCloudAccess: (state: typeof mockAuthState) =>
-    state.licenseStatus !== 'refunded' &&
-    state.licenseStatus !== 'deactivated' &&
-    ((state.source === 'creem' && state.cloudWordsLimit > 0) ||
-      (state.source === 'appsumo' &&
-        state.cloudWordsLimit > 0 &&
-        state.licenseStatus === 'active') ||
-      state.plan === 'pro'),
-  useAuthStore: (selector: any) =>
-    typeof selector === 'function' ? selector(mockAuthState) : mockAuthState,
 }))
 
 // ─── Import components AFTER mocks ───────────────────────────────────────────
@@ -1222,8 +1207,8 @@ describe('LlmPane models 缓存：已有缓存时跳过 fetch', () => {
     useAppStore.getState().setLlmModels(['cached-model'])
     useAppStore.getState().updateConfig({
       llm_api_key: 'sk-test',
-      llm_base_url: 'https://api.openai.com/v1',
-      llm_provider: 'openai',
+      llm_base_url: 'https://llm.company.internal/v1',
+      llm_provider: 'company',
     })
 
     renderSettings()
@@ -1244,8 +1229,8 @@ describe('LlmPane models 缓存：已有缓存时跳过 fetch', () => {
     useAppStore.getState().setLlmModels([])
     useAppStore.getState().updateConfig({
       llm_api_key: 'sk-test',
-      llm_base_url: 'https://api.openai.com/v1',
-      llm_provider: 'openai',
+      llm_base_url: 'https://llm.company.internal/v1',
+      llm_provider: 'company',
     })
 
     renderSettings()
@@ -1266,8 +1251,8 @@ describe('LlmPane models 缓存：已有缓存时跳过 fetch', () => {
     useAppStore.getState().setLlmModels([])
     useAppStore.getState().updateConfig({
       llm_api_key: 'sk-test',
-      llm_base_url: 'https://api.openai.com/v1',
-      llm_provider: 'openai',
+      llm_base_url: 'https://llm.company.internal/v1',
+      llm_provider: 'company',
     })
 
     renderSettings()

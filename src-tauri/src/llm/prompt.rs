@@ -281,9 +281,6 @@ fn append_voice_operation_prompt(
         VoiceIntentKind::OpenQuestion => prompt.push_str(
             "\nAnswer the question directly. This operation never inserts or replaces application text.",
         ),
-        VoiceIntentKind::Search => prompt.push_str(
-            "\nSearch routing must bypass the language model. Return no generated content.",
-        ),
     }
 }
 

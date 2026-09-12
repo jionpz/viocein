@@ -15,6 +15,11 @@ use tauri::Manager;
 use tauri_plugin_global_shortcut::GlobalShortcutExt;
 
 #[tauri::command]
+pub fn quit_app(app: tauri::AppHandle) {
+    app.exit(0);
+}
+
+#[tauri::command]
 pub fn request_browser_access(
     detector: tauri::State<'_, ContextDetectorHandle>,
     target: BrowserTarget,

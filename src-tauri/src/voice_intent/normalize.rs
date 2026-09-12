@@ -68,18 +68,6 @@ impl<'a> NormalizedUtterance<'a> {
         let original_end = self.original_ranges.get(prefix_chars.checked_sub(1)?)?.end;
         trim_command_payload(self.original.get(original_end..)?).map(ToString::to_string)
     }
-
-    pub(crate) fn original_for_match_range(&self, start: usize, end: usize) -> Option<String> {
-        if start >= end || end > self.match_text.len() {
-            return None;
-        }
-        let start_character = self.match_text[..start].chars().count();
-        let end_character = self.match_text[..end].chars().count();
-        let original_start = self.original_ranges.get(start_character)?.start;
-        let original_end = self.original_ranges.get(end_character.checked_sub(1)?)?.end;
-        trim_command_payload(self.original.get(original_start..original_end)?)
-            .map(ToString::to_string)
-    }
 }
 
 fn is_command_boundary(character: char) -> bool {

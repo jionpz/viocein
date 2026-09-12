@@ -1,12 +1,6 @@
-pub mod aliyun_qwen3_asr;
 pub mod apple_speech;
-pub mod assemblyai;
 pub mod capabilities;
-pub mod cloud;
 pub mod config;
-pub mod deepgram;
-pub mod managed_audio;
-pub mod volcengine;
 pub mod whisper_compat;
 
 use async_trait::async_trait;
@@ -24,8 +18,6 @@ pub struct SttConfig {
     pub sample_rate: u32,
     pub resource_id: Option<String>,
     pub operation_id: Option<String>,
-    pub managed_audio: Option<managed_audio::ManagedAudioEncodingConfig>,
-    pub provider_region: Option<String>,
 }
 
 impl Default for SttConfig {
@@ -37,8 +29,6 @@ impl Default for SttConfig {
             sample_rate: 16000,
             resource_id: None,
             operation_id: None,
-            managed_audio: None,
-            provider_region: None,
         }
     }
 }
@@ -74,46 +64,24 @@ pub fn create_provider(
     client: Option<reqwest::Client>,
 ) -> Result<Box<dyn SttProvider>, AppError> {
     match provider_name {
-        "cloud" => {
-            let api_base_url = crate::api_base_url();
-            Ok(match client {
-                Some(ref c) => Box::new(cloud::CloudSttProvider::with_client(
-                    api_base_url,
-                    c.clone(),
-                )),
-                None => Box::new(cloud::CloudSttProvider::new(api_base_url)),
-            })
-        }
-        "assemblyai" => Ok(Box::new(assemblyai::AssemblyAiProvider::new())),
-        "deepgram" => Ok(Box::new(deepgram::DeepgramProvider::new())),
-        aliyun_qwen3_asr::ALIYUN_QWEN3_ASR_PROVIDER => {
-            Ok(Box::new(aliyun_qwen3_asr::AliyunQwen3AsrProvider::new()))
-        }
         apple_speech::APPLE_SPEECH_PROVIDER => {
             Ok(Box::new(apple_speech::AppleSpeechProvider::new()))
-        }
-        volcengine::VOLCENGINE_DOUBAO_PROVIDER => {
-            Ok(Box::new(volcengine::VolcengineDoubaoProvider::new()))
         }
         config::CUSTOM_WHISPER_PROVIDER => {
             let wc = custom_whisper_config.ok_or_else(|| {
                 AppError::Config("Local / Custom Whisper is missing base URL or model".to_string())
             })?;
+            // Defence in depth: refuse to construct a provider whose endpoint is
+            // not loopback, even if the config was tampered with on disk.
+            crate::egress::validate_loopback_url(&wc.endpoint).map_err(AppError::Config)?;
             Ok(match client {
                 Some(ref c) => Box::new(WhisperCompatProvider::with_client(wc, c.clone())),
                 None => Box::new(WhisperCompatProvider::new(wc)),
             })
         }
-        name => {
-            // All Whisper-compatible providers share the same HTTP upload logic.
-            // Config is centralised in config::build_known_whisper_config.
-            let wc = config::build_known_whisper_config(name)
-                .ok_or_else(|| AppError::Config(format!("Unknown STT provider: {}", name)))?;
-            Ok(match client {
-                Some(ref c) => Box::new(WhisperCompatProvider::with_client(wc, c.clone())),
-                None => Box::new(WhisperCompatProvider::new(wc)),
-            })
-        }
+        name => Err(AppError::Config(format!(
+            "Unknown or disabled STT provider: {name}"
+        ))),
     }
 }
 
@@ -137,18 +105,6 @@ mod tests {
 
         let provider = create_provider(config::CUSTOM_WHISPER_PROVIDER, Some(cfg), None).unwrap();
         assert_eq!(provider.name(), config::CUSTOM_WHISPER_PROVIDER);
-    }
-
-    #[test]
-    fn creates_volcengine_doubao_realtime_provider() {
-        let provider = create_provider("volcengine-doubao", None, None).unwrap();
-        assert_eq!(provider.name(), "Volcengine Doubao Realtime ASR");
-    }
-
-    #[test]
-    fn creates_aliyun_qwen3_realtime_provider() {
-        let provider = create_provider("aliyun-qwen3-asr", None, None).unwrap();
-        assert_eq!(provider.name(), "Aliyun Qwen3 Realtime ASR");
     }
 
     #[test]

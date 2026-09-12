@@ -3,7 +3,6 @@ import i18n from './i18n'
 import { useTauriEvents } from './hooks/useTauriEvents'
 import { useTheme } from './hooks/useTheme'
 import { useAppStore } from './stores/appStore'
-import { useAuthStore } from './stores/authStore'
 import { useRoute } from './lib/router'
 import {
   loadOnboardingCompleted,
@@ -15,20 +14,14 @@ import {
   getPlatformCapabilities,
   getHotkeyRegistrationError,
 } from './lib/tauri'
-import { initDeepLinkListener } from './lib/deep-link'
-import { readPendingDesktopCheckout } from './lib/desktop-checkout-intent'
-import { shouldRefreshSubscriptionOnFocus } from './lib/subscription-refresh-policy'
 import { Capsule } from './components/Capsule'
 import { Settings } from './components/Settings'
 import { History } from './components/History'
 import { Onboarding } from './components/Onboarding'
 import { MainLayout } from './components/MainLayout'
 import { HomePage } from './components/HomePage'
-import { UpgradePage } from './components/UpgradePage'
-import { AccountPage } from './components/AccountPage'
 import { AskPanel } from './components/AskPanel'
 import { ToastContainer } from './components/Toast'
-import { UpdatePrompt } from './components/UpdatePrompt'
 
 function CapsuleApp() {
   useTauriEvents()
@@ -100,59 +93,65 @@ function MainApp() {
   const setHotkeyRegistrationError = useAppStore((s) => s.setHotkeyRegistrationError)
   const [loaded, setLoaded] = useState(false)
   const [loadError, setLoadError] = useState(false)
-  const { route, navigate } = useRoute()
+  const { route } = useRoute()
 
   useEffect(() => {
-    loadOnboardingCompleted().then(async (done) => {
-      setOnboardingCompleted(done)
-      if (done) {
-        try {
+    let cancelled = false
+
+    const bootstrap = async () => {
+      try {
+        const done = await loadOnboardingCompleted()
+        if (cancelled) return
+        setOnboardingCompleted(done)
+
+        const config = await getConfig()
+        if (cancelled) return
+        setConfig(config)
+
+        if (config.ui_language && config.ui_language !== i18n.language) {
+          i18n.changeLanguage(config.ui_language)
+          localStorage.setItem('ui_language', config.ui_language)
+        }
+
+        if (done) {
           const [
-            config,
             history,
             dictionary,
             correctionRules,
             platformCapabilities,
             hotkeyRegistrationError,
           ] = await Promise.all([
-            getConfig(),
             getHistory(200, 0),
             getDictionary(),
             getCorrectionRules(),
             getPlatformCapabilities(),
             getHotkeyRegistrationError(),
           ])
-          setConfig(config)
+          if (cancelled) return
           setSavedConfig(config)
           setHistory(history)
           setDictionary(dictionary)
           setCorrectionRules(correctionRules)
           setPlatformCapabilities(platformCapabilities)
           setHotkeyRegistrationError(hotkeyRegistrationError)
-          // Check macOS Accessibility permission
           if (navigator.platform.toUpperCase().indexOf('MAC') >= 0) {
             checkAccessibilityPermission().then((trusted) => {
-              setAccessibilityTrusted(trusted)
+              if (!cancelled) setAccessibilityTrusted(trusted)
             })
           }
-          // Restore UI language from config
-          if (config.ui_language && config.ui_language !== i18n.language) {
-            i18n.changeLanguage(config.ui_language)
-            localStorage.setItem('ui_language', config.ui_language)
-          }
-        } catch (e) {
-          console.error('Failed to load initial data:', e)
-          setLoadError(true)
         }
+      } catch (e) {
+        console.error('Failed to load initial data:', e)
+        if (!cancelled) setLoadError(true)
+      } finally {
+        if (!cancelled) setLoaded(true)
       }
-      setLoaded(true)
-    })
+    }
 
-    // Initialize auth session (non-blocking)
-    useAuthStore.getState().initialize()
-
-    // Initialize deep-link listener
-    initDeepLinkListener()
+    void bootstrap()
+    return () => {
+      cancelled = true
+    }
   }, [
     setOnboardingCompleted,
     setConfig,
@@ -164,38 +163,6 @@ function MainApp() {
     setPlatformCapabilities,
     setHotkeyRegistrationError,
   ])
-
-  const user = useAuthStore((s) => s.user)
-  const authLoading = useAuthStore((s) => s.loading)
-
-  useEffect(() => {
-    if (!loaded || authLoading || !user || route !== 'account') return
-    if (readPendingDesktopCheckout(localStorage)) navigate('upgrade')
-  }, [authLoading, loaded, navigate, route, user])
-
-  // Subscription changes are event-driven. Focus refresh is reserved for a pending checkout.
-  useEffect(() => {
-    if (!loaded || !user) return
-
-    let refreshInFlight = false
-    const refreshPendingCheckout = () => {
-      const { checkoutPending } = useAuthStore.getState()
-      if (!shouldRefreshSubscriptionOnFocus(checkoutPending) || refreshInFlight) return
-      refreshInFlight = true
-      void useAuthStore
-        .getState()
-        .refreshSubscription()
-        .finally(() => {
-          refreshInFlight = false
-        })
-    }
-
-    window.addEventListener('focus', refreshPendingCheckout)
-
-    return () => {
-      window.removeEventListener('focus', refreshPendingCheckout)
-    }
-  }, [loaded, user])
 
   if (!loaded)
     return (
@@ -222,9 +189,6 @@ function MainApp() {
       {route === 'home' && <HomePage />}
       {route === 'settings' && <Settings />}
       {route === 'history' && <History />}
-      {route === 'upgrade' && <UpgradePage />}
-      {route === 'account' && <AccountPage />}
-      <UpdatePrompt />
       <ToastContainer />
     </MainLayout>
   )

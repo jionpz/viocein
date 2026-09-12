@@ -1,10 +1,8 @@
-/// Shared STT provider configuration constants.
+/// Shared STT provider configuration constants for the internal local-only build.
 ///
-/// Eliminates the triple duplication of endpoint/model/extra_fields across:
-/// - `stt::create_provider`
-/// - `lib::test_stt_connection`
-/// - `lib::bench_stt_connection`
-///
+/// The internal edition only supports speech recognition that stays on the
+/// machine: Apple's on-device Speech framework, or a Whisper-compatible server
+/// running on loopback. Remote STT providers are intentionally not compiled in.
 use super::whisper_compat::WhisperCompatConfig;
 
 pub const APPLE_SPEECH_PROVIDER: &str = "apple-speech";
@@ -14,59 +12,9 @@ pub const CUSTOM_WHISPER_PRESET_CUSTOM: &str = "custom";
 pub const DEFAULT_CUSTOM_WHISPER_BASE_URL: &str = "http://localhost:8000/v1";
 pub const DEFAULT_CUSTOM_WHISPER_MODEL: &str = "Systran/faster-whisper-large-v3";
 
-/// Configuration for a Whisper-compatible STT provider.
-#[allow(clippy::doc_lazy_continuation)]
-pub struct SttProviderConfig {
-    pub endpoint: &'static str,
-    pub model: &'static str,
-    pub extra_fields: &'static [(&'static str, &'static str)],
-}
-
-/// Returns the endpoint, model name, and any extra form fields for a given
-/// Whisper-compatible STT provider.
-pub fn get_whisper_config(provider: &str) -> Option<SttProviderConfig> {
-    match provider {
-        "glm-asr" => Some(SttProviderConfig {
-            endpoint: "https://open.bigmodel.cn/api/paas/v4/audio/transcriptions",
-            model: "glm-asr-2512",
-            extra_fields: &[("stream", "false")],
-        }),
-        "openai-whisper" => Some(SttProviderConfig {
-            endpoint: "https://api.openai.com/v1/audio/transcriptions",
-            model: "whisper-1",
-            extra_fields: &[],
-        }),
-        "groq-whisper" => Some(SttProviderConfig {
-            endpoint: "https://api.groq.com/openai/v1/audio/transcriptions",
-            model: "whisper-large-v3-turbo",
-            extra_fields: &[],
-        }),
-        "siliconflow" => Some(SttProviderConfig {
-            endpoint: "https://api.siliconflow.cn/v1/audio/transcriptions",
-            model: "FunAudioLLM/SenseVoiceSmall",
-            extra_fields: &[],
-        }),
-        _ => None,
-    }
-}
-
+/// Normalize a local Whisper-compatible server URL and enforce loopback only.
 pub fn normalize_custom_whisper_endpoint(base_url: &str) -> Result<String, String> {
-    let trimmed = base_url.trim();
-    if trimmed.is_empty() {
-        return Err("Base URL is required for Local / Custom Whisper".to_string());
-    }
-
-    let mut parsed =
-        url::Url::parse(trimmed).map_err(|_| "Base URL must be a valid URL".to_string())?;
-    if parsed.scheme() != "http" && parsed.scheme() != "https" {
-        return Err("Base URL must start with http:// or https://".to_string());
-    }
-    if !parsed.username().is_empty() || parsed.password().is_some() {
-        return Err("Base URL must not include credentials".to_string());
-    }
-    if parsed.fragment().is_some() {
-        return Err("Base URL must not include a fragment".to_string());
-    }
+    let mut parsed = crate::egress::parse_loopback_base_url(base_url)?;
 
     let normalized_path = parsed.path().trim_end_matches('/').to_string();
     if normalized_path.ends_with("/audio/transcriptions") {
@@ -96,26 +44,8 @@ pub fn build_custom_whisper_config(
     })
 }
 
-pub fn build_known_whisper_config(provider: &str) -> Option<WhisperCompatConfig> {
-    let cfg = get_whisper_config(provider)?;
-    Some(WhisperCompatConfig {
-        provider_name: provider.to_string(),
-        endpoint: cfg.endpoint.to_string(),
-        model: cfg.model.to_string(),
-        extra_fields: cfg
-            .extra_fields
-            .iter()
-            .map(|(k, v)| (k.to_string(), v.to_string()))
-            .collect(),
-        api_key_required: true,
-    })
-}
-
 pub fn stt_provider_requires_api_key(provider: &str) -> bool {
-    !matches!(
-        provider,
-        "cloud" | CUSTOM_WHISPER_PROVIDER | APPLE_SPEECH_PROVIDER
-    )
+    !matches!(provider, CUSTOM_WHISPER_PROVIDER | APPLE_SPEECH_PROVIDER)
 }
 
 #[cfg(test)]
@@ -123,71 +53,20 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_glm_asr_config() {
-        let cfg = get_whisper_config("glm-asr").unwrap();
-        assert!(cfg.endpoint.contains("bigmodel.cn"));
-        assert_eq!(cfg.model, "glm-asr-2512");
-        assert!(cfg.extra_fields.contains(&("stream", "false")));
-    }
-
-    #[test]
-    fn test_openai_whisper_config() {
-        let cfg = get_whisper_config("openai-whisper").unwrap();
-        assert!(cfg.endpoint.contains("api.openai.com"));
-        assert_eq!(cfg.model, "whisper-1");
-        assert!(cfg.extra_fields.is_empty());
-    }
-
-    #[test]
-    fn test_groq_whisper_config() {
-        let cfg = get_whisper_config("groq-whisper").unwrap();
-        assert!(cfg.endpoint.contains("api.groq.com"));
-        assert_eq!(cfg.model, "whisper-large-v3-turbo");
-        assert!(cfg.extra_fields.is_empty());
-    }
-
-    #[test]
-    fn test_siliconflow_config() {
-        let cfg = get_whisper_config("siliconflow").unwrap();
-        assert!(cfg.endpoint.contains("siliconflow"));
-        assert_eq!(cfg.model, "FunAudioLLM/SenseVoiceSmall");
-        assert!(cfg.extra_fields.is_empty());
-    }
-
-    #[test]
-    fn test_unknown_provider_returns_none() {
-        assert!(get_whisper_config("unknown").is_none());
-    }
-
-    #[test]
-    fn test_deepgram_not_in_whisper_config() {
-        assert!(get_whisper_config("deepgram").is_none());
-    }
-
-    #[test]
-    fn test_assemblyai_not_in_whisper_config() {
-        assert!(get_whisper_config("assemblyai").is_none());
-    }
-
-    #[test]
-    fn test_cloud_not_in_whisper_config() {
-        assert!(get_whisper_config("cloud").is_none());
-    }
-
-    #[test]
-    fn apple_speech_is_builtin_local_and_does_not_require_api_key() {
+    fn local_providers_do_not_require_api_keys() {
         assert!(!stt_provider_requires_api_key(APPLE_SPEECH_PROVIDER));
-        assert!(get_whisper_config(APPLE_SPEECH_PROVIDER).is_none());
+        assert!(!stt_provider_requires_api_key(CUSTOM_WHISPER_PROVIDER));
+        assert!(stt_provider_requires_api_key("deepgram"));
     }
 
     #[test]
-    fn test_normalize_custom_whisper_base_url() {
+    fn custom_whisper_endpoint_is_appended() {
         let endpoint = normalize_custom_whisper_endpoint("http://localhost:8000/v1").unwrap();
         assert_eq!(endpoint, "http://localhost:8000/v1/audio/transcriptions");
     }
 
     #[test]
-    fn test_normalize_custom_whisper_full_endpoint() {
+    fn custom_whisper_full_endpoint_is_preserved() {
         let endpoint =
             normalize_custom_whisper_endpoint("http://localhost:8000/v1/audio/transcriptions")
                 .unwrap();
@@ -195,72 +74,55 @@ mod tests {
     }
 
     #[test]
-    fn custom_whisper_appends_transcription_path_before_query() {
-        let endpoint =
-            normalize_custom_whisper_endpoint("https://example.com/openai?api-version=2026-01-01")
-                .unwrap();
-
-        assert_eq!(
-            endpoint,
-            "https://example.com/openai/audio/transcriptions?api-version=2026-01-01"
-        );
-    }
-
-    #[test]
-    fn custom_whisper_preserves_query_on_full_endpoint() {
+    fn custom_whisper_query_is_preserved() {
         let endpoint = normalize_custom_whisper_endpoint(
-            "https://example.com/v1/audio/transcriptions?api-version=2026-01-01",
+            "http://127.0.0.1:8000/v1/audio/transcriptions?api-version=2026-01-01",
         )
         .unwrap();
-
         assert_eq!(
             endpoint,
-            "https://example.com/v1/audio/transcriptions?api-version=2026-01-01"
+            "http://127.0.0.1:8000/v1/audio/transcriptions?api-version=2026-01-01"
         );
     }
 
     #[test]
-    fn custom_whisper_rejects_embedded_credentials_and_fragments() {
+    fn custom_whisper_rejects_remote_and_credentialed_hosts() {
+        let remote = normalize_custom_whisper_endpoint("https://api.openai.com/v1").unwrap_err();
+        assert!(remote.contains("remote hosts are blocked"));
+
+        let disguised =
+            normalize_custom_whisper_endpoint("https://localhost.evil.com/v1").unwrap_err();
+        assert!(disguised.contains("remote hosts are blocked"));
+
         let credentials =
-            normalize_custom_whisper_endpoint("https://user:secret@example.com/v1").unwrap_err();
-        let fragment =
-            normalize_custom_whisper_endpoint("https://example.com/v1#section").unwrap_err();
-
+            normalize_custom_whisper_endpoint("http://user:secret@localhost:8000/v1").unwrap_err();
         assert!(credentials.contains("credentials"));
-        assert!(fragment.contains("fragment"));
     }
 
     #[test]
-    fn test_custom_whisper_rejects_empty_base_url() {
-        let err = normalize_custom_whisper_endpoint("   ").unwrap_err();
-        assert!(err.contains("Base URL is required"));
+    fn custom_whisper_rejects_empty_and_non_http_urls() {
+        assert!(normalize_custom_whisper_endpoint("   ").is_err());
+        assert!(normalize_custom_whisper_endpoint("file:///tmp/server").is_err());
     }
 
     #[test]
-    fn test_custom_whisper_rejects_non_http_url() {
-        let err = normalize_custom_whisper_endpoint("file:///tmp/server").unwrap_err();
-        assert!(err.contains("http://"));
+    fn custom_whisper_requires_model() {
+        let error = build_custom_whisper_config("http://localhost:8000/v1", "  ").unwrap_err();
+        assert!(error.contains("Model is required"));
     }
 
     #[test]
-    fn test_build_custom_whisper_config() {
+    fn custom_whisper_builds_loopback_config() {
         let cfg = build_custom_whisper_config(
-            "http://localhost:8000/v1",
+            "http://127.0.0.1:8000/v1",
             "Systran/faster-whisper-large-v3",
         )
         .unwrap();
         assert_eq!(cfg.provider_name, CUSTOM_WHISPER_PROVIDER);
         assert_eq!(
             cfg.endpoint,
-            "http://localhost:8000/v1/audio/transcriptions"
+            "http://127.0.0.1:8000/v1/audio/transcriptions"
         );
-        assert_eq!(cfg.model, "Systran/faster-whisper-large-v3");
         assert!(!cfg.api_key_required);
-    }
-
-    #[test]
-    fn test_build_custom_whisper_config_requires_model() {
-        let err = build_custom_whisper_config("http://localhost:8000/v1", "  ").unwrap_err();
-        assert!(err.contains("Model is required"));
     }
 }

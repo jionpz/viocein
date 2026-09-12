@@ -3,7 +3,6 @@ use serde::{Deserialize, Serialize};
 
 use crate::app_detector::types::TargetAppGuard;
 
-use super::search::SearchUrl;
 use super::{VoiceIntent, VoiceIntentKind, VoiceOutputPlacement, VoiceRoutingFlags};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -53,7 +52,6 @@ pub trait VoiceExecutionBackend: Send {
     async fn replace_selection(&mut self, text: &str) -> Result<(), String>;
     async fn popup_answer(&mut self, text: &str) -> Result<(), String>;
     async fn copy_to_clipboard(&mut self, text: &str) -> Result<(), String>;
-    async fn open_search(&mut self, url: &SearchUrl) -> Result<(), String>;
 }
 
 pub async fn execute_voice_intent(
@@ -69,8 +67,7 @@ pub async fn execute_voice_intent(
         );
     }
 
-    if request.intent.kind != VoiceIntentKind::Search && request.generated_output.trim().is_empty()
-    {
+    if request.generated_output.trim().is_empty() {
         return result(
             request.intent,
             None,
@@ -85,7 +82,6 @@ pub async fn execute_voice_intent(
         VoiceOutputPlacement::PopupAnswer => {
             popup_or_copy(request.intent, request.generated_output, None, backend).await
         }
-        VoiceOutputPlacement::OpenUrl => execute_search(request, backend).await,
     }
 }
 
@@ -191,53 +187,6 @@ async fn execute_replacement(
     }
 }
 
-async fn execute_search(
-    request: VoiceExecutionRequest<'_>,
-    backend: &mut dyn VoiceExecutionBackend,
-) -> VoiceExecutionResult {
-    let Some(provider) = request.intent.search_provider else {
-        return result(
-            request.intent,
-            None,
-            VoiceExecutionStatus::Prevented,
-            Some(VoiceExecutionFallbackReason::OutputFailed),
-        );
-    };
-    let Some(query) = request.intent.payload.as_deref() else {
-        return result(
-            request.intent,
-            None,
-            VoiceExecutionStatus::Prevented,
-            Some(VoiceExecutionFallbackReason::EmptyOutput),
-        );
-    };
-    let search_url = match SearchUrl::new(provider, query) {
-        Ok(url) => url,
-        Err(_) => {
-            return result(
-                request.intent,
-                None,
-                VoiceExecutionStatus::Prevented,
-                Some(VoiceExecutionFallbackReason::OutputFailed),
-            )
-        }
-    };
-    match backend.open_search(&search_url).await {
-        Ok(()) => result(
-            request.intent,
-            Some(VoiceOutputPlacement::OpenUrl),
-            VoiceExecutionStatus::Completed,
-            None,
-        ),
-        Err(_) => result(
-            request.intent,
-            None,
-            VoiceExecutionStatus::Failed,
-            Some(VoiceExecutionFallbackReason::OutputFailed),
-        ),
-    }
-}
-
 async fn popup_or_copy(
     intent: &VoiceIntent,
     output: &str,
@@ -274,7 +223,6 @@ fn feature_enabled(kind: VoiceIntentKind, flags: VoiceRoutingFlags) -> bool {
         VoiceIntentKind::DraftInsert => flags.draft_insert,
         VoiceIntentKind::RewriteSelection => flags.rewrite_selection,
         VoiceIntentKind::TranslateSelection => flags.translate_selection,
-        VoiceIntentKind::Search => flags.search,
         VoiceIntentKind::DictateInsert
         | VoiceIntentKind::TranslateInsert
         | VoiceIntentKind::AskSelection
@@ -306,8 +254,7 @@ mod tests {
     use super::*;
     use crate::app_detector::types::TargetAppGuard;
     use crate::voice_intent::{
-        CommandLocale, SearchProvider, VoiceIntent, VoiceIntentKind, VoiceOutputPlacement,
-        VoiceRoutingFlags,
+        CommandLocale, VoiceIntent, VoiceIntentKind, VoiceOutputPlacement, VoiceRoutingFlags,
     };
 
     static TARGET_GUARD: LazyLock<TargetAppGuard> = LazyLock::new(TargetAppGuard::default);
@@ -320,7 +267,6 @@ mod tests {
         popup_fails: bool,
         insert_fails: bool,
         copy_fails: bool,
-        opened_url: Option<String>,
     }
 
     #[async_trait]
@@ -366,45 +312,25 @@ mod tests {
                 Ok(())
             }
         }
-
-        async fn open_search(&mut self, url: &SearchUrl) -> Result<(), String> {
-            self.actions.push("open_search");
-            self.opened_url = Some(url.as_str().to_string());
-            Ok(())
-        }
     }
 
     fn intent(kind: VoiceIntentKind) -> VoiceIntent {
-        let (placement, provider, payload) = match kind {
+        let (placement, payload) = match kind {
             VoiceIntentKind::DictateInsert
             | VoiceIntentKind::DraftInsert
             | VoiceIntentKind::TranslateInsert => (
                 VoiceOutputPlacement::InsertAtCursor,
-                None,
                 (kind == VoiceIntentKind::DraftInsert).then(|| "draft payload".to_string()),
             ),
             VoiceIntentKind::RewriteSelection | VoiceIntentKind::TranslateSelection => {
-                (VoiceOutputPlacement::ReplaceSelection, None, None)
+                (VoiceOutputPlacement::ReplaceSelection, None)
             }
             VoiceIntentKind::AskSelection | VoiceIntentKind::OpenQuestion => {
-                (VoiceOutputPlacement::PopupAnswer, None, None)
+                (VoiceOutputPlacement::PopupAnswer, None)
             }
-            VoiceIntentKind::Search => (
-                VoiceOutputPlacement::OpenUrl,
-                Some(SearchProvider::Google),
-                Some("rust".to_string()),
-            ),
         };
-        VoiceIntent::from_parts(
-            kind,
-            placement,
-            1.0,
-            provider,
-            payload,
-            Some(CommandLocale::En),
-            None,
-        )
-        .unwrap()
+        VoiceIntent::from_parts(kind, placement, 1.0, payload, Some(CommandLocale::En), None)
+            .unwrap()
     }
 
     fn request<'a>(
@@ -430,7 +356,6 @@ mod tests {
             (VoiceIntentKind::DictateInsert, "insert_at_cursor"),
             (VoiceIntentKind::RewriteSelection, "replace_selection"),
             (VoiceIntentKind::AskSelection, "popup_answer"),
-            (VoiceIntentKind::Search, "open_search"),
         ];
         for (kind, expected_action) in cases {
             let intent = intent(kind);
@@ -452,12 +377,6 @@ mod tests {
 
             assert_eq!(result.status, VoiceExecutionStatus::Completed);
             assert!(backend.actions.contains(&expected_action), "{kind:?}");
-            if kind == VoiceIntentKind::Search {
-                assert_eq!(
-                    backend.opened_url.as_deref(),
-                    Some("https://www.google.com/search?q=rust")
-                );
-            }
         }
     }
 
@@ -550,13 +469,6 @@ mod tests {
                 VoiceIntentKind::TranslateSelection,
                 VoiceRoutingFlags {
                     translate_selection: false,
-                    ..VoiceRoutingFlags::default()
-                },
-            ),
-            (
-                VoiceIntentKind::Search,
-                VoiceRoutingFlags {
-                    search: false,
                     ..VoiceRoutingFlags::default()
                 },
             ),

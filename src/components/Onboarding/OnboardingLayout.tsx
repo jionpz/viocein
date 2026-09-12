@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { spring } from '../../lib/animations'
 import { StepIndicator } from './StepIndicator'
+import { quitApp } from '../../lib/tauri'
 
 interface Props {
   step: number
@@ -33,9 +34,7 @@ export function OnboardingLayout({
 }: Props) {
   const { t } = useTranslation()
   const handleClose = () => {
-    import('@tauri-apps/api/core')
-      .then(({ invoke }) => invoke('plugin:process|exit', { code: 0 }))
-      .catch(() => {})
+    void quitApp().catch(() => {})
   }
 
   return (

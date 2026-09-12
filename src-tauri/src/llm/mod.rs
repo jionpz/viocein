@@ -1,6 +1,4 @@
-pub mod cloud;
 pub mod context_policy;
-pub mod model_capabilities;
 pub mod openai;
 pub mod prompt;
 pub mod protocol;
@@ -21,13 +19,16 @@ pub struct LlmConfig {
     pub temperature: f64,
 }
 
+pub const COMPANY_PROVIDER: &str = "company";
+pub const OLLAMA_PROVIDER: &str = "ollama";
+
 impl Default for LlmConfig {
     fn default() -> Self {
         Self {
-            provider: "zhipu".to_string(),
+            provider: COMPANY_PROVIDER.to_string(),
             api_key: String::new(),
-            model: "glm-4.7".to_string(),
-            base_url: "https://open.bigmodel.cn/api/paas/v4".to_string(),
+            model: "default".to_string(),
+            base_url: String::new(),
             max_tokens: 4096,
             temperature: 0.3,
         }
@@ -89,8 +90,38 @@ pub trait LlmProvider: Send + Sync {
     fn name(&self) -> &str;
 }
 
+/// Whether the provider cannot work without an API key.
+///
+/// The company gateway is an OpenAI-compatible endpoint that may or may not
+/// require a bearer token, so a missing key is allowed here: the Authorization
+/// header is only attached when a key was actually configured.
 pub fn provider_requires_api_key(provider: &str) -> bool {
-    !matches!(provider.trim().to_ascii_lowercase().as_str(), "ollama")
+    !matches!(
+        provider.trim().to_ascii_lowercase().as_str(),
+        COMPANY_PROVIDER | OLLAMA_PROVIDER
+    )
+}
+
+/// Providers compiled into the internal local-only edition.
+pub fn is_supported_provider(provider: &str) -> bool {
+    matches!(
+        provider.trim().to_ascii_lowercase().as_str(),
+        COMPANY_PROVIDER | OLLAMA_PROVIDER
+    )
+}
+
+/// Validate a provider base URL against the local-first egress policy.
+pub fn validate_provider_base_url(provider: &str, base_url: &str) -> Result<(), String> {
+    if !is_supported_provider(provider) {
+        return Err(format!("Unknown or disabled LLM provider: {provider}"));
+    }
+
+    let endpoint = protocol::chat_endpoint(provider, base_url)?;
+    match provider.trim().to_ascii_lowercase().as_str() {
+        COMPANY_PROVIDER => crate::egress::validate_gateway_endpoint(base_url, &endpoint),
+        OLLAMA_PROVIDER => crate::egress::validate_loopback_url(&endpoint),
+        _ => Err(format!("Unknown or disabled LLM provider: {provider}")),
+    }
 }
 
 pub fn has_usable_provider_credentials(provider: &str, api_key: &str) -> bool {
@@ -113,13 +144,16 @@ pub fn apply_provider_auth_header(
 pub fn create_provider(
     provider_name: &str,
     client: Option<reqwest::Client>,
-) -> Box<dyn LlmProvider> {
-    match (provider_name, client) {
-        ("cloud", Some(c)) => Box::new(cloud::CloudLlmProvider::with_client(c)),
-        ("cloud", None) => Box::new(cloud::CloudLlmProvider::new()),
-        (_, Some(c)) => Box::new(openai::OpenAiProvider::with_client(c)),
-        (_, None) => Box::new(openai::OpenAiProvider::new()),
+) -> Result<Box<dyn LlmProvider>, AppError> {
+    if !is_supported_provider(provider_name) {
+        return Err(AppError::Config(format!(
+            "Unknown or disabled LLM provider: {provider_name}"
+        )));
     }
+    Ok(match client {
+        Some(c) => Box::new(openai::OpenAiProvider::with_client(c)),
+        None => Box::new(openai::OpenAiProvider::new()),
+    })
 }
 
 #[cfg(test)]
@@ -127,20 +161,38 @@ mod provider_capability_tests {
     use super::*;
 
     #[test]
-    fn ollama_is_keyless_and_remote_providers_require_keys() {
+    fn supported_providers_allow_a_keyless_company_gateway() {
         assert!(!provider_requires_api_key("ollama"));
         assert!(!provider_requires_api_key(" Ollama "));
-        assert!(provider_requires_api_key("openai"));
+        assert!(!provider_requires_api_key("company"));
+        assert!(!provider_requires_api_key(" Company "));
         assert!(provider_requires_api_key("custom-openai-compatible"));
     }
 
     #[test]
-    fn usable_credentials_are_consistent_for_keyless_and_keyed_providers() {
+    fn only_company_and_ollama_providers_are_compiled_in() {
+        assert!(is_supported_provider("company"));
+        assert!(is_supported_provider(" Ollama "));
+        assert!(!is_supported_provider("openai"));
+        assert!(!is_supported_provider("openrouter"));
+        assert!(!is_supported_provider("cloud"));
+        assert!(create_provider("openai", None).is_err());
+        assert!(create_provider("company", None).is_ok());
+    }
+
+    #[test]
+    fn usable_credentials_allow_an_optional_company_key() {
         assert!(has_usable_provider_credentials("ollama", ""));
         assert!(has_usable_provider_credentials("ollama", "   "));
-        assert!(!has_usable_provider_credentials("openai", ""));
-        assert!(!has_usable_provider_credentials("openai", "   "));
-        assert!(has_usable_provider_credentials("openai", "sk-test"));
+        assert!(has_usable_provider_credentials("company", ""));
+        assert!(has_usable_provider_credentials("company", "   "));
+        assert!(has_usable_provider_credentials("company", "sk-test"));
+    }
+
+    #[test]
+    fn provider_validation_rejects_disabled_providers() {
+        let error = validate_provider_base_url("openai", "https://api.openai.com/v1").unwrap_err();
+        assert!(error.contains("disabled"));
     }
 }
 
@@ -245,7 +297,6 @@ mod context_prompt_contract_tests {
             crate::voice_intent::VoiceIntentKind::RewriteSelection,
             crate::voice_intent::VoiceOutputPlacement::ReplaceSelection,
             1.0,
-            None,
             None,
             Some(crate::voice_intent::CommandLocale::En),
             None,

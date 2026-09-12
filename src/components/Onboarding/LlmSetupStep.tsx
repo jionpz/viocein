@@ -5,6 +5,8 @@ import {
   LLM_DEFAULT_CONFIG,
   ONBOARDING_LLM_PROVIDERS,
   llmProviderRequiresApiKey,
+  rememberLlmConnection,
+  recallLlmConnection,
 } from '../../lib/constants'
 import { testLlmConnection, fetchLlmModels } from '../../lib/tauri'
 import { CheckCircle2, XCircle, Loader2, RefreshCw } from 'lucide-react'
@@ -20,7 +22,7 @@ export function LlmSetupStep() {
   const [fetchingModels, setFetchingModels] = useState(false)
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const fallbackProvider =
-    (ONBOARDING_LLM_PROVIDERS[0]?.value as LlmProvider | undefined) ?? 'zhipu'
+    (ONBOARDING_LLM_PROVIDERS[0]?.value as LlmProvider | undefined) ?? 'company'
   const selectedProvider: LlmProvider = ONBOARDING_LLM_PROVIDERS.some(
     (provider) => provider.value === config.llm_provider,
   )
@@ -30,11 +32,13 @@ export function LlmSetupStep() {
 
   useEffect(() => {
     if (selectedProvider === config.llm_provider) return
+    rememberLlmConnection(config.llm_provider, config.llm_base_url, config.llm_model)
+    const previous = recallLlmConnection(selectedProvider)
     const defaults = LLM_DEFAULT_CONFIG[selectedProvider]
     updateConfig({
       llm_provider: selectedProvider,
-      llm_base_url: defaults?.baseUrl ?? config.llm_base_url,
-      llm_model: defaults?.model ?? config.llm_model,
+      llm_base_url: previous?.baseUrl ?? defaults?.baseUrl ?? '',
+      llm_model: previous?.model ?? defaults?.model ?? config.llm_model,
     })
     setLlmTestStatus('idle')
     setModels([])
@@ -63,7 +67,7 @@ export function LlmSetupStep() {
   // Auto-fetch when API key changes (debounced)
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
-    if ((requiresApiKey && !config.llm_api_key) || !config.llm_base_url) return
+    if (!config.llm_base_url) return
     debounceRef.current = setTimeout(() => {
       doFetchModels(config.llm_api_key, selectedProvider, config.llm_base_url)
     }, 500)
@@ -94,11 +98,13 @@ export function LlmSetupStep() {
           value={selectedProvider}
           onChange={(e) => {
             const provider = e.target.value as typeof config.llm_provider
+            rememberLlmConnection(config.llm_provider, config.llm_base_url, config.llm_model)
+            const previous = recallLlmConnection(provider)
             const defaults = LLM_DEFAULT_CONFIG[provider]
             updateConfig({
               llm_provider: provider,
-              llm_base_url: defaults?.baseUrl ?? config.llm_base_url,
-              llm_model: defaults?.model ?? config.llm_model,
+              llm_base_url: previous?.baseUrl ?? defaults?.baseUrl ?? '',
+              llm_model: previous?.model ?? defaults?.model ?? config.llm_model,
             })
             setLlmTestStatus('idle')
             setModels([])
@@ -128,7 +134,7 @@ export function LlmSetupStep() {
             />
             <button
               onClick={handleTest}
-              disabled={!config.llm_api_key || llmTestStatus === 'testing'}
+              disabled={llmTestStatus === 'testing'}
               className="px-4 py-2.5 bg-accent text-white rounded-[10px] text-[13px] border-none cursor-pointer hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             >
               {llmTestStatus === 'testing' && <Loader2 size={14} className="animate-spin" />}
@@ -157,9 +163,7 @@ export function LlmSetupStep() {
           </div>
           <button
             onClick={() => doFetchModels(config.llm_api_key, selectedProvider, config.llm_base_url)}
-            disabled={
-              fetchingModels || !config.llm_base_url || (requiresApiKey && !config.llm_api_key)
-            }
+            disabled={fetchingModels || !config.llm_base_url}
             className="px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-secondary cursor-pointer hover:border-border-focus disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
             title={t('onboarding.llm.fetchModelsTitle')}
           >
@@ -177,10 +181,11 @@ export function LlmSetupStep() {
         <div className="flex gap-2">
           <input
             value={config.llm_base_url}
-            onChange={(e) => updateConfig({ llm_base_url: e.target.value })}
-            placeholder={
-              LLM_DEFAULT_CONFIG[selectedProvider]?.baseUrl ?? 'https://api.openai.com/v1'
-            }
+            onChange={(e) => {
+              updateConfig({ llm_base_url: e.target.value })
+              setLlmTestStatus('idle')
+            }}
+            placeholder={LLM_DEFAULT_CONFIG[selectedProvider]?.baseUrl || t('onboarding.llm.baseUrlPlaceholder')}
             className="min-w-0 flex-1 px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary outline-none focus:border-border-focus transition-colors"
           />
           {!requiresApiKey && (

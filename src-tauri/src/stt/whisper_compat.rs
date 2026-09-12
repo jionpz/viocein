@@ -157,6 +157,8 @@ impl SttProvider for WhisperCompatProvider {
                 form = form.text(key.clone(), value.clone());
             }
 
+            crate::egress::validate_loopback_url(&self.provider_config.endpoint)
+                .map_err(AppError::Config)?;
             let mut request = self
                 .client
                 .post(&self.provider_config.endpoint)
@@ -272,8 +274,6 @@ mod tests {
                 sample_rate: 16000,
                 resource_id: None,
                 operation_id: None,
-                managed_audio: None,
-                provider_region: None,
             })
             .await;
 

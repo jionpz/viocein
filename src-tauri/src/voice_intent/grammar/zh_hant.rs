@@ -1,6 +1,5 @@
-use super::{CommandMatch, SearchMatch};
-use crate::voice_intent::normalize::{trim_command_payload, NormalizedUtterance};
-use crate::voice_intent::SearchProvider;
+use super::CommandMatch;
+use crate::voice_intent::normalize::NormalizedUtterance;
 
 pub(super) fn match_draft(view: &NormalizedUtterance<'_>) -> CommandMatch<String> {
     for prefix in ["寫一封", "幫我寫", "回覆說", "寫個", "起草"] {
@@ -52,47 +51,4 @@ pub(super) fn matches_informational(view: &NormalizedUtterance<'_>) -> bool {
     ]
     .iter()
     .any(|prefix| view.starts_with_prefix(prefix, false))
-}
-
-pub(super) fn match_search(view: &NormalizedUtterance<'_>) -> CommandMatch<SearchMatch> {
-    let text = view.match_text();
-    for (name, provider) in provider_names() {
-        for verb in ["搜尋", "搜"] {
-            let leading = format!("在 {name} {verb}");
-            if view.starts_with_prefix(&leading, false) {
-                return view
-                    .payload_after_prefix(&leading)
-                    .map(|query| CommandMatch::Matched(SearchMatch { provider, query }))
-                    .unwrap_or(CommandMatch::MissingPayload);
-            }
-
-            let start = format!("{verb} ");
-            let suffix = format!(" 在 {name}");
-            if text.starts_with(&start) && text.ends_with(&suffix) {
-                let query_start = start.len();
-                let query_end = text.len() - suffix.len();
-                return view
-                    .original_for_match_range(query_start, query_end)
-                    .as_deref()
-                    .and_then(trim_command_payload)
-                    .map(|query| {
-                        CommandMatch::Matched(SearchMatch {
-                            provider,
-                            query: query.to_string(),
-                        })
-                    })
-                    .unwrap_or(CommandMatch::MissingPayload);
-            }
-        }
-    }
-    CommandMatch::NoMatch
-}
-
-fn provider_names() -> [(&'static str, SearchProvider); 4] {
-    [
-        ("google", SearchProvider::Google),
-        ("youtube", SearchProvider::YouTube),
-        ("amazon", SearchProvider::Amazon),
-        ("github", SearchProvider::GitHub),
-    ]
 }

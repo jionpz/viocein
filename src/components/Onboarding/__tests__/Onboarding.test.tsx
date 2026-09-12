@@ -4,14 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { Onboarding } from '../index'
 
 const mockStore = {
-  onboardingStep: 5,
+  onboardingStep: 0,
   setOnboardingStep: vi.fn(),
   setOnboardingCompleted: vi.fn(),
   sttTestStatus: 'idle',
   llmTestStatus: 'idle',
-  onboardingMode: 'cloud',
-  setOnboardingMode: vi.fn(),
-  updateConfig: vi.fn(),
   config: {},
 }
 
@@ -27,10 +24,21 @@ vi.mock('react-i18next', () => ({
 }))
 
 vi.mock('../OnboardingLayout', () => ({
-  OnboardingLayout: ({ children, onBack }: { children: React.ReactNode; onBack: () => void }) => (
+  OnboardingLayout: ({
+    children,
+    onBack,
+    onNext,
+  }: {
+    children: React.ReactNode
+    onBack: () => void
+    onNext: () => void
+  }) => (
     <div>
       <button type="button" onClick={onBack}>
         Back
+      </button>
+      <button type="button" onClick={onNext}>
+        Next
       </button>
       {children}
     </div>
@@ -38,21 +46,13 @@ vi.mock('../OnboardingLayout', () => ({
 }))
 
 vi.mock('../WelcomeStep', () => ({ WelcomeStep: () => <div>Welcome</div> }))
-vi.mock('../AccountStep', () => ({ AccountStep: () => <div>Account</div> }))
-vi.mock('../ModeSelectStep', () => ({ ModeSelectStep: () => <div>Mode</div> }))
 vi.mock('../SttSetupStep', () => ({ SttSetupStep: () => <div>STT</div> }))
 vi.mock('../LlmSetupStep', () => ({ LlmSetupStep: () => <div>LLM</div> }))
 vi.mock('../PermissionsStep', () => ({ PermissionsStep: () => <div>Permissions</div> }))
-vi.mock('../QuickTestStep', () => ({ QuickTestStep: () => <div>Quick Test</div> }))
 vi.mock('../DoneStep', () => ({ DoneStep: () => <div>Done</div> }))
 
 vi.mock('../../../stores/appStore', () => ({
   useAppStore: (selector: (state: typeof mockStore) => unknown) => selector(mockStore),
-}))
-
-vi.mock('../../../stores/authStore', () => ({
-  useAuthStore: (selector: (state: { user: { id: string } }) => unknown) =>
-    selector({ user: { id: 'test-user' } }),
 }))
 
 vi.mock('../../../lib/tauri', () => ({
@@ -61,28 +61,45 @@ vi.mock('../../../lib/tauri', () => ({
 }))
 
 beforeEach(() => {
-  mockStore.onboardingStep = 5
-  mockStore.onboardingMode = 'cloud'
+  mockStore.onboardingStep = 0
+  mockStore.sttTestStatus = 'idle'
+  mockStore.llmTestStatus = 'idle'
   mockStore.setOnboardingStep.mockReset()
+  mockStore.setOnboardingCompleted.mockReset()
 })
 
 afterEach(() => cleanup())
 
-describe('Onboarding cloud navigation', () => {
-  it('returns from Permissions to Mode Select because cloud skips provider setup', async () => {
+describe('Onboarding local-only navigation', () => {
+  it('starts on the welcome step', () => {
     render(<Onboarding />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
-
-    await waitFor(() => expect(mockStore.setOnboardingStep).toHaveBeenCalledWith(2))
+    expect(screen.getByText('Welcome')).toBeInTheDocument()
   })
 
-  it('returns from Quick Test to Permissions', async () => {
-    mockStore.onboardingStep = 6
+  it('returns from the LLM step to the local STT step', async () => {
+    mockStore.onboardingStep = 2
     render(<Onboarding />)
 
     fireEvent.click(screen.getByRole('button', { name: 'Back' }))
 
-    await waitFor(() => expect(mockStore.setOnboardingStep).toHaveBeenCalledWith(5))
+    await waitFor(() => expect(mockStore.setOnboardingStep).toHaveBeenCalledWith(1))
+  })
+
+  it('returns from the done step to permissions', async () => {
+    mockStore.onboardingStep = 4
+    render(<Onboarding />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Back' }))
+
+    await waitFor(() => expect(mockStore.setOnboardingStep).toHaveBeenCalledWith(3))
+  })
+
+  it('advances from welcome to the local STT step without a cloud mode step', async () => {
+    render(<Onboarding />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next' }))
+
+    await waitFor(() => expect(mockStore.setOnboardingStep).toHaveBeenCalledWith(1))
   })
 })

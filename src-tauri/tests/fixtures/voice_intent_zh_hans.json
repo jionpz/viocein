@@ -8,12 +8,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一封明天发布会的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -27,12 +25,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -46,12 +42,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -65,12 +59,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -84,18 +76,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-006-github-search",
+    "id": "zh-hans-006-github-search-removed",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 GitHub 搜索 tauri global shortcut",
@@ -103,13 +93,11 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "tauri global shortcut",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
@@ -122,12 +110,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -141,12 +127,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -160,12 +144,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -179,12 +161,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -198,12 +178,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "发布进度更新",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -217,12 +195,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "三个访谈问题",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -236,12 +212,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "友好的感谢消息",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -255,12 +229,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "同意方案的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -274,12 +246,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -293,12 +263,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -312,12 +280,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -331,12 +297,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -350,12 +314,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "发布进度更新",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -369,12 +331,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "三个访谈问题",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -388,12 +348,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "友好的感谢消息",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -407,12 +365,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "同意方案的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -426,12 +382,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -445,12 +399,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -464,12 +416,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -483,12 +433,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -502,12 +450,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "发布进度更新",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -521,12 +467,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "三个访谈问题",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -540,12 +484,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "友好的感谢消息",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -559,12 +501,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "同意方案的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -578,12 +518,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -597,12 +535,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -616,12 +552,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -635,12 +569,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -654,12 +586,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "发布进度更新",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -673,12 +603,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "三个访谈问题",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -692,12 +620,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "友好的感谢消息",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -711,12 +637,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "同意方案的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -730,12 +654,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -749,12 +671,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -768,12 +688,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -787,12 +705,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -806,12 +722,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "发布进度更新",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -825,12 +739,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "三个访谈问题",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -844,12 +756,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "友好的感谢消息",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -863,12 +773,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "同意方案的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -882,12 +790,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -901,12 +807,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -920,12 +824,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -939,12 +841,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -958,12 +858,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -977,12 +875,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -996,12 +892,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1015,12 +909,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1034,12 +926,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1053,12 +943,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1072,12 +960,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1091,12 +977,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1110,12 +994,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1129,12 +1011,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "rewrite_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1148,12 +1028,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1167,12 +1045,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1186,12 +1062,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1205,12 +1079,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1224,12 +1096,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1243,12 +1113,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1262,12 +1130,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1281,12 +1147,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1300,12 +1164,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1319,12 +1181,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1338,12 +1198,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1357,12 +1215,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "translate_selection",
     "expectedPlacement": "replace_selection",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1376,12 +1232,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1395,12 +1249,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1414,12 +1266,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1433,12 +1283,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1452,12 +1300,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1471,12 +1317,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1490,12 +1334,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1509,12 +1351,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1528,12 +1368,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1547,12 +1385,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1566,12 +1402,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1585,12 +1419,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1604,12 +1436,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1623,12 +1453,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1642,12 +1470,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -1661,18 +1487,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-089-search-positive",
+    "id": "zh-hans-089-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Google 搜索 Rust 所有权教程",
@@ -1680,18 +1504,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-090-search-positive",
+    "id": "zh-hans-090-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Rust 所有权教程 在 Google",
@@ -1699,18 +1521,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-091-search-positive",
+    "id": "zh-hans-091-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Google 搜索 React 组件测试",
@@ -1718,18 +1538,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-092-search-positive",
+    "id": "zh-hans-092-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 React 组件测试 在 Google",
@@ -1737,18 +1555,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-093-search-positive",
+    "id": "zh-hans-093-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Google 搜索 Tauri 全局快捷键",
@@ -1756,18 +1572,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-094-search-positive",
+    "id": "zh-hans-094-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Tauri 全局快捷键 在 Google",
@@ -1775,18 +1589,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "google",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-095-search-positive",
+    "id": "zh-hans-095-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 YouTube 搜索 Rust 所有权教程",
@@ -1794,18 +1606,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-096-search-positive",
+    "id": "zh-hans-096-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Rust 所有权教程 在 YouTube",
@@ -1813,18 +1623,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-097-search-positive",
+    "id": "zh-hans-097-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 YouTube 搜索 React 组件测试",
@@ -1832,18 +1640,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-098-search-positive",
+    "id": "zh-hans-098-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 React 组件测试 在 YouTube",
@@ -1851,18 +1657,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-099-search-positive",
+    "id": "zh-hans-099-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 YouTube 搜索 Tauri 全局快捷键",
@@ -1870,18 +1674,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-100-search-positive",
+    "id": "zh-hans-100-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Tauri 全局快捷键 在 YouTube",
@@ -1889,18 +1691,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "youtube",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-101-search-positive",
+    "id": "zh-hans-101-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Amazon 搜索 Rust 所有权教程",
@@ -1908,18 +1708,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-102-search-positive",
+    "id": "zh-hans-102-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Rust 所有权教程 在 Amazon",
@@ -1927,18 +1725,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-103-search-positive",
+    "id": "zh-hans-103-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Amazon 搜索 React 组件测试",
@@ -1946,18 +1742,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-104-search-positive",
+    "id": "zh-hans-104-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 React 组件测试 在 Amazon",
@@ -1965,18 +1759,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-105-search-positive",
+    "id": "zh-hans-105-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 Amazon 搜索 Tauri 全局快捷键",
@@ -1984,18 +1776,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-106-search-positive",
+    "id": "zh-hans-106-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Tauri 全局快捷键 在 Amazon",
@@ -2003,18 +1793,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "amazon",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-107-search-positive",
+    "id": "zh-hans-107-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 GitHub 搜索 Rust 所有权教程",
@@ -2022,18 +1810,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-108-search-positive",
+    "id": "zh-hans-108-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Rust 所有权教程 在 GitHub",
@@ -2041,18 +1827,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "Rust 所有权教程",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-109-search-positive",
+    "id": "zh-hans-109-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 GitHub 搜索 React 组件测试",
@@ -2060,18 +1844,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-110-search-positive",
+    "id": "zh-hans-110-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 React 组件测试 在 GitHub",
@@ -2079,18 +1861,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "React 组件测试",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-111-search-positive",
+    "id": "zh-hans-111-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "在 GitHub 搜索 Tauri 全局快捷键",
@@ -2098,18 +1878,16 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
   {
-    "id": "zh-hans-112-search-positive",
+    "id": "zh-hans-112-search-removed-positive",
     "mode": "ask",
     "locale": "zh-Hans",
     "utterance": "搜索 Tauri 全局快捷键 在 GitHub",
@@ -2117,13 +1895,11 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
-    "expectedKind": "search",
-    "expectedPlacement": "open_url",
-    "expectedProvider": "github",
-    "expectedPayload": "Tauri 全局快捷键",
+    "expectedKind": "open_question",
+    "expectedPlacement": "popup_answer",
+    "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
   },
@@ -2136,12 +1912,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2155,12 +1929,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2174,12 +1946,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2193,12 +1963,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2212,12 +1980,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2231,12 +1997,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2250,12 +2014,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2269,12 +2031,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2288,12 +2048,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2307,12 +2065,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2326,12 +2082,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2345,12 +2099,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2364,12 +2116,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2383,12 +2133,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2402,12 +2150,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2421,12 +2167,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2440,12 +2184,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2459,12 +2201,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2478,12 +2218,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2497,12 +2235,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2516,12 +2252,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "明天的跟进邮件",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2535,12 +2269,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "一条简短通知",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2554,12 +2286,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "确认周二的回复",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2573,12 +2303,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "专业的道歉信",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -2592,12 +2320,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -2611,12 +2337,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -2630,12 +2354,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -2649,12 +2371,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -2668,12 +2388,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2687,12 +2405,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2706,12 +2422,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2725,12 +2439,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2744,12 +2456,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2763,12 +2473,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2782,12 +2490,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2801,12 +2507,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2820,12 +2524,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2839,12 +2541,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2858,12 +2558,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2877,12 +2575,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2896,12 +2592,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2915,12 +2609,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2934,12 +2626,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2953,12 +2643,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2972,12 +2660,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -2991,12 +2677,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3010,12 +2694,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3029,12 +2711,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3048,12 +2728,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3067,12 +2745,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3086,12 +2762,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3105,12 +2779,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3124,12 +2796,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3143,12 +2813,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3162,12 +2830,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3181,12 +2847,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "negated",
     "destructiveBlocker": true
@@ -3200,12 +2864,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3219,12 +2881,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3238,12 +2898,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3257,12 +2915,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3276,12 +2932,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3295,12 +2949,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3314,12 +2966,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3333,12 +2983,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3352,12 +3000,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3371,12 +3017,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3390,12 +3034,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3409,12 +3051,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3428,12 +3068,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3447,12 +3085,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3466,12 +3102,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3485,12 +3119,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3504,12 +3136,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3523,12 +3153,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3542,12 +3170,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3561,12 +3187,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3580,12 +3204,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3599,12 +3221,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3618,12 +3238,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3637,12 +3255,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3656,12 +3272,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3675,12 +3289,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3694,12 +3306,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3713,12 +3323,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -3732,12 +3340,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3751,12 +3357,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3770,12 +3374,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3789,12 +3391,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3808,12 +3408,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3827,12 +3425,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3846,12 +3442,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3865,12 +3459,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3884,12 +3476,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3903,12 +3493,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3922,12 +3510,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3941,12 +3527,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3960,12 +3544,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3979,12 +3561,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -3998,12 +3578,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4017,12 +3595,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4036,12 +3612,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4055,12 +3629,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4074,12 +3646,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4093,12 +3663,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "code_or_identifier",
     "destructiveBlocker": true
@@ -4112,12 +3680,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4131,12 +3697,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4150,12 +3714,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4169,12 +3731,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4188,12 +3748,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4207,12 +3765,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4226,12 +3782,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4245,12 +3799,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4264,12 +3816,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4283,12 +3833,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4302,12 +3850,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4321,12 +3867,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4340,12 +3884,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4359,12 +3901,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4378,12 +3918,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4397,12 +3935,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4416,12 +3952,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -4435,12 +3969,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "quoted_or_reported",
     "destructiveBlocker": true
@@ -4454,12 +3986,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4473,12 +4003,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "ambiguous",
     "destructiveBlocker": true
@@ -4492,12 +4020,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4511,12 +4037,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4530,12 +4054,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4549,12 +4071,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4568,12 +4088,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4587,12 +4105,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4606,12 +4122,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4625,12 +4139,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4644,12 +4156,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4663,12 +4173,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "missing_payload",
     "destructiveBlocker": true
@@ -4682,12 +4190,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4701,12 +4207,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4720,12 +4224,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4739,12 +4241,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4758,12 +4258,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4777,12 +4275,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4796,12 +4292,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4815,12 +4309,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4834,12 +4326,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4853,12 +4343,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4872,12 +4360,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4891,12 +4377,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "unsupported_locale",
     "destructiveBlocker": true
@@ -4910,12 +4394,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "给 Sara 的邮件麻烦她帮我订一下会议室",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -4929,12 +4411,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "draft_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": "给 Sara 的邮件我们这周的会议在下午五点",
     "expectedFallbackReason": null,
     "destructiveBlocker": false
@@ -4948,12 +4428,10 @@
     "flags": {
       "draft_insert": false,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "feature_disabled",
     "destructiveBlocker": true
@@ -4967,12 +4445,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": false,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "feature_disabled",
     "destructiveBlocker": true
@@ -4986,12 +4462,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": false,
-      "search": true
+      "translate_selection": false
     },
     "expectedKind": "ask_selection",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": "feature_disabled",
     "destructiveBlocker": true
@@ -5005,14 +4479,12 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": false
+      "translate_selection": true
     },
     "expectedKind": "open_question",
     "expectedPlacement": "popup_answer",
-    "expectedProvider": null,
     "expectedPayload": null,
-    "expectedFallbackReason": "feature_disabled",
+    "expectedFallbackReason": null,
     "destructiveBlocker": true
   },
   {
@@ -5024,12 +4496,10 @@
     "flags": {
       "draft_insert": true,
       "rewrite_selection": true,
-      "translate_selection": true,
-      "search": true
+      "translate_selection": true
     },
     "expectedKind": "dictate_insert",
     "expectedPlacement": "insert_at_cursor",
-    "expectedProvider": null,
     "expectedPayload": null,
     "expectedFallbackReason": null,
     "destructiveBlocker": true

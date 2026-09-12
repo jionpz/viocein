@@ -1,10 +1,8 @@
 import { useTranslation } from 'react-i18next'
 import { invoke } from '@tauri-apps/api/core'
 import i18n from '../../i18n'
-import { ExternalLink } from 'lucide-react'
-import { openUrl } from '@tauri-apps/plugin-opener'
 import { useAppStore } from '../../stores/appStore'
-import { APP_NAME, APP_VERSION, APP_REPO_URL, UI_LANGUAGES } from '../../lib/constants'
+import { APP_NAME, APP_VERSION, UI_LANGUAGES } from '../../lib/constants'
 
 export function AboutPane() {
   const { t } = useTranslation()
@@ -49,10 +47,9 @@ export function AboutPane() {
         </div>
       </SectionCard>
 
-      {/* Open Source */}
+      {/* Internal build: upstream license attribution only, no public links. */}
       <SectionCard title={t('settings.openSource')}>
         <InfoRow label={t('settings.license')} value={t('settings.mit')} />
-        <LinkRow label={t('settings.github')} url={APP_REPO_URL} linkText={t('settings.view')} />
         <InfoRow label={t('settings.framework')} value={t('settings.tauriReact')} />
       </SectionCard>
     </div>
@@ -76,19 +73,5 @@ function InfoRow({ label, value }: { label: string; value: string }) {
       <span className="text-text-secondary">{label}</span>
       <span className="text-text-primary">{value}</span>
     </div>
-  )
-}
-
-function LinkRow({ label, url, linkText }: { label: string; url: string; linkText: string }) {
-  return (
-    <button
-      onClick={() => openUrl(url)}
-      className="flex justify-between items-center w-full px-3 py-2.5 border-b border-border last:border-b-0 bg-transparent border-x-0 border-t-0 cursor-pointer text-[13px]"
-    >
-      <span className="text-text-secondary">{label}</span>
-      <span className="text-accent flex items-center gap-1">
-        {linkText} <ExternalLink size={12} />
-      </span>
-    </button>
   )
 }

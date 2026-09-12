@@ -2,8 +2,13 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAppStore } from '../../stores/appStore'
 import type { PolishStyle } from '../../stores/appStore'
-import { hasManagedCloudAccess, useAuthStore } from '../../stores/authStore'
-import { LLM_PROVIDERS, LLM_DEFAULT_CONFIG, llmProviderRequiresApiKey } from '../../lib/constants'
+import {
+  LLM_PROVIDERS,
+  LLM_DEFAULT_CONFIG,
+  llmProviderRequiresApiKey,
+  rememberLlmConnection,
+  recallLlmConnection,
+} from '../../lib/constants'
 import {
   benchLlmConnection,
   fetchLlmModels,
@@ -20,7 +25,6 @@ import {
   XCircle,
   Loader2,
   RefreshCw,
-  Crown,
   ChevronDown,
   MoreHorizontal,
 } from 'lucide-react'
@@ -38,18 +42,14 @@ export function LlmPane() {
   const llmLatencyMs = useAppStore((s) => s.llmLatencyMs)
   const setLlmLatencyMs = useAppStore((s) => s.setLlmLatencyMs)
   const lastContext = useAppStore((s) => s.lastContext)
-  const { user } = useAuthStore()
-  const hasCloudAccess = useAuthStore(hasManagedCloudAccess)
   const { t } = useTranslation()
 
-  const isCloud = config.llm_provider === 'cloud'
+  // Company LLM is the OpenAI-compatible gateway the operator configures here.
+  // Ollama is the optional local model server. Rust re-validates every request
+  // against the egress policy, so the pane cannot widen egress on its own.
   const requiresApiKey = llmProviderRequiresApiKey(config.llm_provider)
   const polishPromptLength = config.polish_custom_prompt.length
   const hasCustomPolishConfig = config.polish_custom_prompt.trim().length > 0
-  const goUpgrade = () => {
-    window.location.hash = '#/upgrade'
-  }
-
   const models = useAppStore((s) => s.llmModels)
   const setModels = useAppStore((s) => s.setLlmModels)
   const [fetchingModels, setFetchingModels] = useState(false)
@@ -126,7 +126,7 @@ export function LlmPane() {
   }, [hasCustomPolishConfig])
 
   useEffect(() => {
-    if (isCloud || !requiresApiKey) {
+    if (!requiresApiKey) {
       setLlmApiKey('')
       setCredentialErrorMessage(null)
       return
@@ -145,11 +145,11 @@ export function LlmPane() {
     return () => {
       cancelled = true
     }
-  }, [config.llm_api_key, config.llm_provider, isCloud, requiresApiKey])
+  }, [config.llm_api_key, config.llm_provider, requiresApiKey])
 
   const persistLlmCredential = useCallback(
     (value: string, delayMs = 350) => {
-      if (isCloud || !requiresApiKey) return
+      if (!requiresApiKey) return
       if (credentialSaveRef.current) clearTimeout(credentialSaveRef.current)
       credentialSaveRef.current = setTimeout(() => {
         credentialSaveRef.current = null
@@ -162,7 +162,7 @@ export function LlmPane() {
           })
       }, delayMs)
     },
-    [config.llm_provider, isCloud, requiresApiKey],
+    [config.llm_provider, requiresApiKey],
   )
 
   const doFetchModels = useCallback(
@@ -184,7 +184,6 @@ export function LlmPane() {
 
   // Auto-fetch when API key or base URL changes (debounced); skips if models already cached
   useEffect(() => {
-    if (isCloud) return
     if ((requiresApiKey && !llmApiKey) || !config.llm_base_url) return
     if (models.length > 0) return
     if (debounceRef.current) clearTimeout(debounceRef.current)
@@ -201,7 +200,6 @@ export function LlmPane() {
     config.llm_base_url,
     config.llm_provider,
     doFetchModels,
-    isCloud,
     llmApiKey,
     models.length,
     requiresApiKey,
@@ -260,11 +258,13 @@ export function LlmPane() {
           value={config.llm_provider}
           onChange={(e) => {
             const provider = e.target.value as typeof config.llm_provider
+            rememberLlmConnection(config.llm_provider, config.llm_base_url, config.llm_model)
+            const previous = recallLlmConnection(provider)
             const defaults = LLM_DEFAULT_CONFIG[provider]
             updateConfig({
               llm_provider: provider,
-              llm_base_url: defaults?.baseUrl ?? config.llm_base_url,
-              llm_model: defaults?.model ?? config.llm_model,
+              llm_base_url: previous?.baseUrl ?? defaults?.baseUrl ?? '',
+              llm_model: previous?.model ?? defaults?.model ?? config.llm_model,
             })
             setLlmTestStatus('idle')
             setLlmLatencyMs(null)
@@ -281,32 +281,8 @@ export function LlmPane() {
         </select>
       </FormField>
 
-      {isCloud && (
-        <div className="border border-border rounded-[10px] px-3 py-3 space-y-2">
-          <div className="flex items-center gap-2 text-[13px]">
-            <Crown size={14} className="text-accent" />
-            <span className="text-text-primary font-medium">{t('settings.cloudLlmPro')}</span>
-          </div>
-          {!user ? (
-            <p className="text-[12px] text-text-secondary">{t('settings.llmSignInHint')}</p>
-          ) : !hasCloudAccess ? (
-            <div className="space-y-2">
-              <p className="text-[12px] text-text-secondary">{t('settings.llmUpgradeHint')}</p>
-              <button
-                type="button"
-                onClick={goUpgrade}
-                className="rounded-[8px] border border-accent bg-accent px-3 py-1.5 text-[12px] font-medium text-white hover:bg-accent-hover"
-              >
-                {t('nav.upgrade')}
-              </button>
-            </div>
-          ) : (
-            <p className="text-[12px] text-green-500">{t('settings.llmProActive')}</p>
-          )}
-        </div>
-      )}
+      {(
 
-      {!isCloud && (
         <>
           {requiresApiKey && (
             <FormField label={t('settings.apiKey')}>
@@ -328,7 +304,7 @@ export function LlmPane() {
                 />
                 <button
                   onClick={handleTest}
-                  disabled={!llmApiKey || llmTestStatus === 'testing'}
+                  disabled={llmTestStatus === 'testing'}
                   className="px-4 py-2.5 bg-accent text-white rounded-[10px] text-[13px] border-none cursor-pointer hover:bg-accent-hover disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
                 >
                   {llmTestStatus === 'testing' && <Loader2 size={14} className="animate-spin" />}
@@ -361,7 +337,7 @@ export function LlmPane() {
               </div>
               <button
                 onClick={() => doFetchModels(llmApiKey, config.llm_provider, config.llm_base_url)}
-                disabled={fetchingModels || !config.llm_base_url || (requiresApiKey && !llmApiKey)}
+                disabled={fetchingModels || !config.llm_base_url}
                 className="px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-secondary cursor-pointer hover:border-border-focus disabled:opacity-40 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
                 title={t('settings.fetchModels')}
               >
@@ -386,7 +362,8 @@ export function LlmPane() {
                   setTestErrorMessage(null)
                 }}
                 placeholder={
-                  LLM_DEFAULT_CONFIG[config.llm_provider]?.baseUrl ?? 'https://api.openai.com/v1'
+                  LLM_DEFAULT_CONFIG[config.llm_provider]?.baseUrl ||
+                  t('settings.llmBaseUrlPlaceholder')
                 }
                 className="min-w-0 flex-1 px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary outline-none focus:border-border-focus transition-colors"
               />

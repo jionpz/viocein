@@ -110,6 +110,10 @@ export async function requestBrowserAccess(target: BrowserTarget): Promise<Brows
 }
 
 // Config commands
+export async function quitApp(): Promise<void> {
+  return invoke('quit_app')
+}
+
 export async function getConfig(): Promise<AppConfig> {
   return invoke('get_config')
 }
@@ -119,13 +123,8 @@ export async function updateConfig(config: AppConfig): Promise<void> {
 }
 
 export type RecordingLimitMode = 'auto' | 'custom'
-export type SttTransport = 'fileUpload' | 'streaming' | 'localBuffered' | 'managedUpload'
-export type RecordingLimitSource =
-  | 'provider'
-  | 'managedProduct'
-  | 'clientBuffer'
-  | 'productSafety'
-  | 'unknownUpstream'
+export type SttTransport = 'fileUpload' | 'localBuffered'
+export type RecordingLimitSource = 'provider' | 'clientBuffer' | 'unknownUpstream'
 
 export interface SttRecordingCapability {
   registryVersion: number
@@ -151,16 +150,6 @@ export async function getSttRecordingCapability(
   customSeconds: number,
 ): Promise<ResolvedSttRecordingLimit> {
   return invoke('get_stt_recording_capability', { provider, mode, customSeconds })
-}
-
-export type LlmModelCapability = 'certified' | 'best_effort' | 'unknown'
-
-export async function getLlmModelCapability(
-  provider: string,
-  baseUrl: string,
-  model: string,
-): Promise<LlmModelCapability> {
-  return invoke('get_llm_model_capability', { provider, baseUrl, model })
 }
 
 export interface CredentialStatus {
@@ -424,13 +413,11 @@ export type VoiceIntentKind =
   | 'translate_selection'
   | 'ask_selection'
   | 'open_question'
-  | 'search'
 
 export type VoiceOutputPlacement =
   | 'insert_at_cursor'
   | 'replace_selection'
   | 'popup_answer'
-  | 'open_url'
 
 export type VoiceExecutionFallbackReason =
   | 'feature_disabled'
@@ -440,7 +427,7 @@ export type VoiceExecutionFallbackReason =
   | 'focus_restore_failed'
   | 'output_failed'
 
-export type AskResultOutput = 'popupAnswer' | 'openedSearch' | 'insertedText' | 'copiedFallback'
+export type AskResultOutput = 'popupAnswer' | 'insertedText' | 'copiedFallback'
 
 export interface AskDictationResult {
   question: string
@@ -449,7 +436,6 @@ export interface AskDictationResult {
   output: AskResultOutput
   usedSelectedText: boolean
   selectedTextTruncated: boolean
-  searchProvider: string | null
   requestedPlacement: VoiceOutputPlacement
   actualPlacement: VoiceOutputPlacement | null
   fallbackReason: VoiceExecutionFallbackReason | null
@@ -492,19 +478,6 @@ export async function getHistory(limit: number, offset: number): Promise<History
 
 export async function clearHistory(): Promise<void> {
   return invoke('clear_history')
-}
-
-export interface RestoreBackupResult {
-  history: HistoryEntry[]
-  dictionary: DictionaryEntry[]
-  correctionRules: CorrectionRule[]
-}
-
-export async function restoreBackupData(
-  history: unknown | null,
-  dictionary: unknown | null,
-): Promise<RestoreBackupResult> {
-  return invoke('restore_backup_data', { history, dictionary })
 }
 
 // Dictionary

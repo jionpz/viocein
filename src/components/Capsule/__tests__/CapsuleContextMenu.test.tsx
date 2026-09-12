@@ -1,6 +1,6 @@
 import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { setCapsuleAutoHide } from '../../../lib/tauri'
+import { quitApp, setCapsuleAutoHide } from '../../../lib/tauri'
 import { useAppStore } from '../../../stores/appStore'
 import { CapsuleContextMenu } from '../CapsuleContextMenu'
 
@@ -14,8 +14,6 @@ vi.mock('react-i18next', () => ({
           'capsule.menu.openMainWindow': 'Open Main Window',
           'capsule.menu.settings': 'Settings',
           'capsule.menu.history': 'History',
-          'capsule.menu.account': 'Account',
-          'capsule.menu.upgrade': 'Upgrade',
           'capsule.menu.exit': 'Exit',
         }) as Record<string, string>
       )[key] ?? key,
@@ -23,6 +21,7 @@ vi.mock('react-i18next', () => ({
 }))
 
 vi.mock('../../../lib/tauri', () => ({
+  quitApp: vi.fn().mockResolvedValue(undefined),
   setCapsuleAutoHide: vi.fn().mockResolvedValue(undefined),
 }))
 
@@ -59,5 +58,13 @@ describe('CapsuleContextMenu', () => {
     render(<CapsuleContextMenu onClose={vi.fn()} />)
 
     expect(screen.getByRole('menuitem', { name: /keep capsule visible/i })).toBeInTheDocument()
+  })
+
+  it('quits through the local Tauri command', async () => {
+    render(<CapsuleContextMenu onClose={vi.fn()} />)
+
+    fireEvent.click(screen.getByRole('menuitem', { name: /exit/i }))
+
+    await waitFor(() => expect(quitApp).toHaveBeenCalledOnce())
   })
 })

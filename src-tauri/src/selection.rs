@@ -18,11 +18,7 @@ fn clipboard_copy_sentinel() -> String {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|duration| duration.as_nanos())
         .unwrap_or_default();
-    format!(
-        "__viocein_copy_sentinel_{}_{}__",
-        std::process::id(),
-        nanos
-    )
+    format!("__viocein_copy_sentinel_{}_{}__", std::process::id(), nanos)
 }
 
 #[cfg(target_os = "macos")]
