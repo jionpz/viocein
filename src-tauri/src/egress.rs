@@ -16,6 +16,21 @@
 
 use url::Url;
 
+/// Build an HTTP client that never follows redirects.
+///
+/// URL validation only sees the URL the application constructs. Following a
+/// server redirect would perform a second request to an unvalidated
+/// destination, so the network policy must stop at that boundary as well.
+pub fn no_redirect_client_builder() -> reqwest::ClientBuilder {
+    reqwest::Client::builder().redirect(reqwest::redirect::Policy::none())
+}
+
+pub fn no_redirect_client() -> reqwest::Client {
+    no_redirect_client_builder()
+        .build()
+        .expect("Failed to create HTTP client")
+}
+
 fn is_loopback_host(host: &str) -> bool {
     let host = host.trim().trim_start_matches('[').trim_end_matches(']');
     if host.eq_ignore_ascii_case("localhost") {
@@ -58,8 +73,9 @@ pub fn parse_gateway_base_url(raw: &str) -> Result<Url, String> {
 /// Require that an outbound company-provider URL stays on the configured gateway.
 ///
 /// The endpoint must be same-origin with the configured base URL and its path
-/// must live under the configured base path. Nothing else is reachable, so a
-/// request cannot be redirected at a different service mid-flight.
+/// must live under the configured base path. Callers must use
+/// [`no_redirect_client_builder`] or [`no_redirect_client`] so a response cannot
+/// redirect the request to an unvalidated destination mid-flight.
 pub fn validate_gateway_endpoint(base_url: &str, endpoint: &str) -> Result<(), String> {
     let base = parse_gateway_base_url(base_url)?;
     let url = parse_gateway_base_url(endpoint)?;
@@ -229,5 +245,33 @@ mod tests {
         assert!(validate_loopback_url("http://[::1]:8000/v1").is_ok());
         assert!(validate_loopback_url("https://llm.corp.example/openai/v1").is_err());
         assert!(validate_loopback_url("https://api.openai.com/v1").is_err());
+    }
+
+    #[tokio::test]
+    async fn no_redirect_client_surfaces_redirect_instead_of_following_it() {
+        use std::io::{Read, Write};
+        use std::net::TcpListener;
+
+        let listener = TcpListener::bind("127.0.0.1:0").unwrap();
+        let address = listener.local_addr().unwrap();
+        let server = std::thread::spawn(move || {
+            let (mut stream, _) = listener.accept().unwrap();
+            let mut request = [0u8; 1024];
+            let _ = stream.read(&mut request);
+            stream
+                .write_all(
+                    b"HTTP/1.1 302 Found\r\nLocation: http://127.0.0.1:0/blocked\r\nContent-Length: 0\r\n\r\n",
+                )
+                .unwrap();
+        });
+
+        let response = no_redirect_client()
+            .get(format!("http://{address}/start"))
+            .send()
+            .await
+            .unwrap();
+
+        assert_eq!(response.status(), reqwest::StatusCode::FOUND);
+        server.join().unwrap();
     }
 }

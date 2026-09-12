@@ -35,7 +35,7 @@ const HTTP_POOL_IDLE_TIMEOUT_SECS: u64 = 10 * 60;
 const HTTP_TCP_KEEPALIVE_SECS: u64 = 60;
 
 fn build_shared_http_client() -> reqwest::Client {
-    reqwest::Client::builder()
+    crate::egress::no_redirect_client_builder()
         .pool_max_idle_per_host(2)
         .pool_idle_timeout(std::time::Duration::from_secs(HTTP_POOL_IDLE_TIMEOUT_SECS))
         .tcp_keepalive(std::time::Duration::from_secs(HTTP_TCP_KEEPALIVE_SECS))

@@ -35,7 +35,7 @@ impl WhisperCompatProvider {
             provider_config,
             stt_config: None,
             audio_buffer: Vec::new(),
-            client: reqwest::Client::new(),
+            client: crate::egress::no_redirect_client(),
         }
     }
 

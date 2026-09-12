@@ -21,7 +21,7 @@ impl Default for OpenAiProvider {
 impl OpenAiProvider {
     pub fn new() -> Self {
         Self {
-            client: Client::new(),
+            client: crate::egress::no_redirect_client(),
         }
     }
 
