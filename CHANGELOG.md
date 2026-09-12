@@ -9,6 +9,10 @@ fork 之前的历史见 git 记录。云端账号、订阅、托管语音识别�
 
 ## [Unreleased]
 
+(暂无)
+
+## [0.2.2] - 2026-09-13
+
 ### Changed
 
 - 出口策略不再跟随 HTTP 重定向:`egress` 与各 provider HTTP 客户端统一使用

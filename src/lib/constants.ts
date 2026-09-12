@@ -1,4 +1,8 @@
 // App metadata
+// Version comes from package.json so the About pane can never drift from the
+// released build (the release workflow checks the same file against the tag).
+import { version as pkgVersion } from '../../package.json'
+
 // UI locales shipped by the internal build (see src/i18n/index.ts).
 // Note: LANGUAGES / TARGET_LANGUAGES below are speech + translation languages,
 // a different concept — do not trim them together with this list.
@@ -8,7 +12,7 @@ export const UI_LANGUAGES = [
 ] as const
 
 export const APP_NAME = 'viocein'
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? 'v0.2.1'
+export const APP_VERSION = `v${pkgVersion}`
 
 export const CUSTOM_WHISPER_PROVIDER = 'custom-whisper' as const
 export const APPLE_SPEECH_PROVIDER = 'apple-speech' as const
