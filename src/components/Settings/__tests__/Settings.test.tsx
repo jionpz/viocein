@@ -177,25 +177,6 @@ vi.mock('../../../lib/tauri', () => ({
       statusHint: null,
     },
   }),
-  getSystemDiagnostics: vi.fn().mockResolvedValue({
-    checkedAt: '2026-07-06T00:00:00',
-    rows: [
-      {
-        id: 'microphone',
-        status: 'ok',
-        message: 'Built-in microphone / 48000 Hz',
-        action: null,
-        lastCheckedAt: '2026-07-06T00:00:00',
-      },
-      {
-        id: 'hotkey',
-        status: 'warning',
-        message: 'Global hotkeys may be limited',
-        action: null,
-        lastCheckedAt: '2026-07-06T00:00:00',
-      },
-    ],
-  }),
   setAutoStart: vi.fn().mockResolvedValue(undefined),
   testSttConnection: vi.fn().mockResolvedValue(true),
   testLlmConnection: vi.fn().mockResolvedValue(true),

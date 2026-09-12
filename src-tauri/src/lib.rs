@@ -327,6 +327,27 @@ mod tests {
     }
 
     #[test]
+    fn capsule_window_config_keeps_the_overlay_non_focusable() {
+        let manifest_dir = std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        let tauri_config: serde_json::Value = serde_json::from_str(
+            &std::fs::read_to_string(manifest_dir.join("tauri.conf.json")).unwrap(),
+        )
+        .unwrap();
+        let capsule = tauri_config["app"]["windows"]
+            .as_array()
+            .unwrap()
+            .iter()
+            .find(|window| window["label"].as_str() == Some("capsule"))
+            .unwrap();
+
+        // The capsule must never take keyboard focus away from the app the user
+        // is typing into; this is enforced by the window config, so the webview
+        // does not need a `setFocusable` call (or its ACL permission).
+        assert_eq!(capsule["focusable"].as_bool(), Some(false));
+        assert_eq!(capsule["focus"].as_bool(), Some(false));
+    }
+
+    #[test]
     fn linux_launch_env_detects_nvidia_wayland_only_for_matching_tuple() {
         let base = LinuxLaunchEnv {
             session_type: "wayland".to_string(),
@@ -805,7 +826,6 @@ pub fn run() {
 
     tauri::Builder::default()
         .plugin(tauri_plugin_store::Builder::default().build())
-        .plugin(tauri_plugin_clipboard_manager::init())
         .plugin(tauri_plugin_autostart::init(
             MacosLauncher::LaunchAgent,
             None,
@@ -979,14 +999,6 @@ pub fn run() {
                     "history" => {
                         if let Some(window) = app.get_webview_window("main") {
                             let _ = window.emit("tray:history", ());
-                            let _ = window.show();
-                            let _ = window.set_focus();
-                            refresh_tray(app);
-                        }
-                    }
-                    "account" => {
-                        if let Some(window) = app.get_webview_window("main") {
-                            let _ = window.emit("navigate", "#/account");
                             let _ = window.show();
                             let _ = window.set_focus();
                             refresh_tray(app);
@@ -1180,7 +1192,6 @@ pub fn run() {
             commands::misc::get_platform_capabilities,
             commands::misc::get_hotkey_registration_error,
             commands::misc::get_hotkey_status,
-            commands::misc::get_system_diagnostics,
             commands::config::set_auto_start,
             commands::config::set_capsule_auto_hide,
         ])

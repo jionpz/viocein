@@ -259,25 +259,6 @@ export async function getHotkeyStatus(): Promise<HotkeyStatus> {
   return invoke('get_hotkey_status')
 }
 
-export type DiagnosticStatus = 'ok' | 'warning' | 'error' | 'notApplicable' | 'checking'
-
-export interface DiagnosticRow {
-  id: 'microphone' | 'accessibility' | 'hotkey' | 'clipboard' | 'insertion' | 'platform' | string
-  status: DiagnosticStatus
-  message: string
-  action: string | null
-  lastCheckedAt: string
-}
-
-export interface SystemDiagnosticsReport {
-  checkedAt: string
-  rows: DiagnosticRow[]
-}
-
-export async function getSystemDiagnostics(): Promise<SystemDiagnosticsReport> {
-  return invoke('get_system_diagnostics')
-}
-
 export interface SttProviderDiagnosticIssue {
   code: string
   message: string

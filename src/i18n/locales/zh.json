@@ -280,7 +280,6 @@
     "hotkeyConflict": "听写和 Ask 快捷键不能相同。",
     "hotkeyInvalid": "有一个快捷键无效，请重新录制组合键。",
     "waylandClipboardCopyOnly": "Wayland 下剪贴板模式只会复制文本，需要手动粘贴，以避免系统权限弹窗。",
-    "diagnostics": "状态检查",
     "healthChecking": "检查中",
     "advancedGeneral": "更多设置",
     "outputDetails": "写入细项",

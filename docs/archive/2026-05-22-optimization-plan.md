@@ -1,3 +1,5 @@
+> **已归档(2026-09-13)**:本文写于内部本地优先版裁剪前后,包含已移除能力(云端/订阅/托管 provider/发布流程)的章节。当前实现以代码和 `README.md` 为准,本文只作历史参考。
+
 # OpenTypeless 三阶段优化实施计划
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.

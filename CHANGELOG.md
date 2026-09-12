@@ -1,56 +1,52 @@
 # Changelog
 
-All notable changes to this project will be documented in this file.
+本文件只记录内部本地优先版(viocein)自身的变更;本仓库是
+[OpenTypeless](https://github.com/tover0314-w/opentypeless) 的 fork,
+fork 之前的历史见 git 记录。云端账号、订阅、托管语音识别、第三方 provider、
+自动更新与 deep-link 等能力已整体移除。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/), and this project adheres to [Semantic Versioning](https://semver.org/).
+格式参考 [Keep a Changelog](https://keepachangelog.com/)。
 
-## [1.1.48] - 2026-07-08
-
-### Added
-- Typeless-style default shortcuts: macOS `Fn`, Windows `Right Alt`, with separate Ask and translate shortcuts.
-- Linux keeps conservative defaults: `Ctrl+/` for dictation and `Ctrl+.` for Ask Anything.
-- Lightweight Ask Anything flow with capsule recording/thinking states and a compact answer note.
-- Selected-text context for Ask and polish, with safe truncation and explicit intent routing.
-- Built-in scenes, local custom scenes, scene activation metadata, and import/export.
-- Local correction rules alongside the custom dictionary.
-- macOS Apple Speech provider and stronger custom Whisper/self-hosted STT diagnostics.
-- OS credential vault storage for BYOK STT/LLM secrets where available.
-- Output strategy diagnostics, clipboard restore safeguards, and Windows SendInput support.
+## [Unreleased]
 
 ### Changed
-- Simplified Settings while keeping key controls discoverable, including idle capsule visibility in General Advanced.
-- Restyled Upgrade to match the quieter jelly-card product UI instead of a heavy marketing layout.
-- Refined AI polish styles: Minimal, Clean, Structured, and Professional.
-- Ask now starts directly from Try Ask / legacy Ask entrypoints instead of opening an empty window.
-- Release notes and README now document the platform-specific shortcut defaults more explicitly.
 
-### Fixed
-- Strict Rust Clippy checks now pass.
-- Onboarding Skip now continues into the app even if best-effort config persistence fails.
-- Improved hotkey registration rollback, collision checks, and status reporting.
-- Reduced accidental git noise from local release, screenshot, and debug artifacts.
-- Completed i18n key coverage across bundled locale files and removed stale onboarding copy that implied clicking the capsule starts recording.
+- 出口策略不再跟随 HTTP 重定向:`egress` 与各 provider HTTP 客户端统一使用
+  `redirect::Policy::none()`,重定向响应直接作为错误暴露,避免请求绕过初始 URL 校验。
+- 清理内部版死代码:移除托盘“账户”入口、未使用的 clipboard-manager 与
+  global-shortcut 前端插件、`http` crate,以及已不再渲染的系统状态检查(diagnostics)链路。
+- 界面语言收敛为 English / 简体中文:删除其余 8 个语言包、`UI_LANGUAGES` 与托盘文案;
+  旧的 `ui_language` 值会回退到英文。
+- capabilities 只保留前端实际调用的权限(删 6 条未使用的 window 权限),并去掉恒为
+  `false` 的 `setFocusable` 调用 —— 胶囊窗口本身已配置 `focusable: false`,改由 Rust 测试断言。
+- 9 篇上游时期实现 spec 移入 `docs/archive/`,现行文档只留在 `docs/` 顶层。
 
-## [0.1.0] - 2026-02-26
+### Removed
+
+- 移除指向上游仓库的 `scripts/create-labels.sh`。
+
+## [0.2.1] - 2026-09-13
+
+### Changed
+
+- 打 `v*` tag 时同时构建 Windows 与 macOS 安装包并发布到 GitHub Release;
+  手动触发只产出 workflow artifact。
+
+## [0.2.0] - 2026-09-13
 
 ### Added
-- Initial open-source release under MIT license
-- Global hotkey voice recording with hold-to-record and toggle modes
-- Floating capsule widget — always-on-top, draggable, with recording/transcribing/polishing states
-- 6 STT providers: Deepgram Nova-3, AssemblyAI, OpenAI Whisper, Groq Whisper, GLM-ASR, SiliconFlow
-- 11 LLM providers: OpenAI, DeepSeek, Zhipu, Claude, Gemini, Moonshot, Qwen, Groq, Ollama, OpenRouter, SiliconFlow
-- Real-time streaming keyboard output — text appears character-by-character as the LLM generates it
-- Clipboard output mode as alternative to keyboard simulation
-- Selected text context — highlight text before recording to give the LLM additional context
-- Translation mode — speak in one language, output in another (20+ target languages)
-- Custom dictionary for domain-specific terms and proper nouns
-- Per-app detection — adapts formatting based on the active application
-- Local history with full-text search and date grouping
-- Dark / light / system theme with smooth transitions
-- Onboarding wizard for first-time setup
-- System tray with quick actions (show/hide, start recording, quit)
-- Auto-start on login
-- Optional Cloud (Pro) subscription for managed STT/LLM quota
-- BYOK (Bring Your Own Key) mode — fully functional without any cloud dependency
-- Cross-platform support: Windows, macOS, Linux
-- CI/CD with automated builds for all three platforms
+
+- GitHub Release 发布流水线(Windows NSIS/MSI 安装包)。
+
+## [0.1.42] - 2026-09-13
+
+### Changed
+
+- 项目更名为 viocein。
+
+### Removed
+
+- 移除云账号 / 登录、订阅与支付、云备份、托管语音识别、第三方 LLM provider、
+  自动更新器与 deep-link。
+- 出口策略收敛为 Rust 侧单一 fail-closed 模块(`src-tauri/src/egress.rs`):
+  只允许公司 OpenAI 兼容网关与 loopback 本地语音识别。

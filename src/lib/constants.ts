@@ -1,15 +1,10 @@
 // App metadata
+// UI locales shipped by the internal build (see src/i18n/index.ts).
+// Note: LANGUAGES / TARGET_LANGUAGES below are speech + translation languages,
+// a different concept — do not trim them together with this list.
 export const UI_LANGUAGES = [
   { value: 'en', label: 'English' },
   { value: 'zh', label: '中文' },
-  { value: 'ja', label: '日本語' },
-  { value: 'ko', label: '한국어' },
-  { value: 'fr', label: 'Français' },
-  { value: 'de', label: 'Deutsch' },
-  { value: 'es', label: 'Español' },
-  { value: 'pt', label: 'Português' },
-  { value: 'ru', label: 'Русский' },
-  { value: 'it', label: 'Italiano' },
 ] as const
 
 export const APP_NAME = 'viocein'

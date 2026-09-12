@@ -280,7 +280,6 @@
     "hotkeyConflict": "Dictation and Ask shortcuts cannot be the same.",
     "hotkeyInvalid": "One shortcut is invalid. Record a new key combination.",
     "waylandClipboardCopyOnly": "On Wayland, clipboard mode copies text only. Paste manually to avoid system permission prompts.",
-    "diagnostics": "Status check",
     "healthChecking": "Checking",
     "advancedGeneral": "More settings",
     "outputDetails": "Text output details",

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { getCapsuleFocusable, getCapsuleVisibility } from '../useCapsuleResize'
+import { getCapsuleVisibility } from '../useCapsuleResize'
 
 describe('getCapsuleVisibility', () => {
   it('hides idle capsule when auto-hide is enabled', () => {
@@ -72,9 +72,5 @@ describe('getCapsuleVisibility', () => {
         pipelineState: 'idle',
       }),
     ).toBe(true)
-  })
-
-  it('keeps the capsule overlay from stealing keyboard output focus', () => {
-    expect(getCapsuleFocusable()).toBe(false)
   })
 })
