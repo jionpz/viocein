@@ -13,7 +13,7 @@ export const UI_LANGUAGES = [
 ] as const
 
 export const APP_NAME = 'viocein'
-export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? 'v0.2.0'
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION ?? 'v0.2.1'
 
 export const CUSTOM_WHISPER_PROVIDER = 'custom-whisper' as const
 export const APPLE_SPEECH_PROVIDER = 'apple-speech' as const

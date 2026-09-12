@@ -1,0 +1,150 @@
+name: Build Release
+
+# 内部本地优先版的安装包构建与发布。
+# - 手动触发：只产出 Actions artifact，不发 Release
+# - 打 v* tag：构建 Windows + macOS，然后建 GitHub Release 并把所有安装包挂上去
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      # tag 与 tauri.conf.json 的版本必须一致，避免挂错版本的安装包。
+      - name: Verify tag matches app version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag_version="${GITHUB_REF_NAME#v}"
+          app_version="$(node -p "require('./src-tauri/tauri.conf.json').version")"
+          if [ "$tag_version" != "$app_version" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match tauri.conf.json version ${app_version}"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      # 未配置代码签名证书，产物是未签名的，首次运行会有 SmartScreen 提示。
+      - name: Build installers
+        run: npm run tauri build -- --target x86_64-pc-windows-msvc
+
+      - name: Upload installers
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: windows-x86_64
+          if-no-files-found: error
+          path: |
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/nsis/*.exe
+            src-tauri/target/x86_64-pc-windows-msvc/release/bundle/msi/*.msi
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Verify tag matches app version
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag_version="${GITHUB_REF_NAME#v}"
+          app_version="$(node -p "require('./src-tauri/tauri.conf.json').version")"
+          if [ "$tag_version" != "$app_version" ]; then
+            echo "::error::tag ${GITHUB_REF_NAME} does not match tauri.conf.json version ${app_version}"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin
+
+      - uses: swatinem/rust-cache@9d47c6ad4b02e050fd481d890b2ea34778fd09d6 # v2.7.8
+        with:
+          workspaces: src-tauri -> target
+
+      - run: npm ci
+
+      # 没有 Developer ID 证书，只能 ad-hoc 签名：codesign 校验能过，但 Gatekeeper
+      # 仍会拦，同事首次打开要右键→打开（或去掉 quarantine 属性）。公证会被跳过。
+      - name: Build app and dmg
+        run: npm run tauri build -- --target aarch64-apple-darwin
+        env:
+          APPLE_SIGNING_IDENTITY: '-'
+
+      - name: Verify signature
+        run: |
+          set -euo pipefail
+          app="src-tauri/target/aarch64-apple-darwin/release/bundle/macos/viocein.app"
+          codesign --verify --deep --strict --verbose=2 "$app"
+
+      - name: Upload dmg
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: macos-aarch64
+          if-no-files-found: error
+          path: src-tauri/target/aarch64-apple-darwin/release/bundle/dmg/*.dmg
+
+  publish:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [build-windows, build-macos]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # 建 Release / 上传资产需要
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          merge-multiple: true
+          path: dist
+
+      - name: Generate checksums
+        working-directory: dist
+        run: |
+          set -euo pipefail
+          find . -maxdepth 1 -type f | sort
+          find . -maxdepth 1 -type f \( -name '*.exe' -o -name '*.msi' -o -name '*.dmg' \) \
+            -printf '%f\n' | sort | xargs sha256sum | tee SHA256SUMS.txt
+
+      - name: Publish release
+        working-directory: dist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME}"
+          assets=()
+          while IFS= read -r file; do assets+=("$file"); done < <(find . -maxdepth 1 -type f | sed 's|^\./||' | sort)
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release ${tag} 已存在，覆盖上传资产。"
+            gh release upload "$tag" "${assets[@]}" --clobber
+          else
+            gh release create "$tag" "${assets[@]}" \
+              --title "viocein ${tag}" \
+              --generate-notes
+          fi
