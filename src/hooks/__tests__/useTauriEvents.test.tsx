@@ -1,4 +1,3 @@
-
 import { act, cleanup, render, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { useTauriEvents } from '../useTauriEvents'
@@ -161,5 +160,4 @@ describe('useTauriEvents', () => {
     expect(toast).toHaveBeenNthCalledWith(1, 'recordingLimits.deadlineWarning', 'info')
     expect(toast).toHaveBeenNthCalledWith(2, 'recordingLimits.deadlineReached', 'info')
   })
-
 })

@@ -281,8 +281,7 @@ export function LlmPane() {
         </select>
       </FormField>
 
-      {(
-
+      {
         <>
           {requiresApiKey && (
             <FormField label={t('settings.apiKey')}>
@@ -382,7 +381,7 @@ export function LlmPane() {
             {!requiresApiKey && renderConnectionFeedback(false)}
           </FormField>
         </>
-      )}
+      }
 
       <div className="space-y-3 pt-1">
         <div>

@@ -69,7 +69,9 @@ export function rememberLlmConnection(provider: string, baseUrl: string, model: 
   LLM_LAST_CONNECTION[provider] = { baseUrl: baseUrl.trim(), model: model.trim() }
 }
 
-export function recallLlmConnection(provider: string): { baseUrl: string; model: string } | undefined {
+export function recallLlmConnection(
+  provider: string,
+): { baseUrl: string; model: string } | undefined {
   return LLM_LAST_CONNECTION[provider]
 }
 

@@ -233,11 +233,10 @@ export function SttPane() {
   const recordingLimitHelper = recordingLimit
     ? showCustomDurationEntry
       ? t('recordingLimits.allowedRangeWithReason', {
-            min: formatRecordingDuration(MIN_CUSTOM_RECORDING_SECONDS, t),
-            max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
-            reason: t(recordingLimit.capability.explanationKey),
-          },
-        )
+          min: formatRecordingDuration(MIN_CUSTOM_RECORDING_SECONDS, t),
+          max: formatRecordingDuration(recordingLimit.capability.hardMaxSeconds, t),
+          reason: t(recordingLimit.capability.explanationKey),
+        })
       : config.recording_limit_mode === 'custom'
         ? isProviderFixedLimit
           ? t('recordingLimits.providerFixedLimit', {

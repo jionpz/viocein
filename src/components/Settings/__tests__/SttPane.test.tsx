@@ -178,9 +178,7 @@ describe('SttPane (internal local-only build)', () => {
   it('shows the loopback endpoint and readiness for custom-whisper', async () => {
     render(<SttPane />)
     expect(await screen.findByText('Local endpoint ready')).toBeInTheDocument()
-    expect(
-      screen.getByText('http://localhost:8000/v1/audio/transcriptions'),
-    ).toBeInTheDocument()
+    expect(screen.getByText('http://localhost:8000/v1/audio/transcriptions')).toBeInTheDocument()
   })
 
   it('allows a keyless local Whisper server', () => {

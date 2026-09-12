@@ -185,7 +185,10 @@ export function LlmSetupStep() {
               updateConfig({ llm_base_url: e.target.value })
               setLlmTestStatus('idle')
             }}
-            placeholder={LLM_DEFAULT_CONFIG[selectedProvider]?.baseUrl || t('onboarding.llm.baseUrlPlaceholder')}
+            placeholder={
+              LLM_DEFAULT_CONFIG[selectedProvider]?.baseUrl ||
+              t('onboarding.llm.baseUrlPlaceholder')
+            }
             className="min-w-0 flex-1 px-3 py-2.5 bg-bg-secondary border border-border rounded-[10px] text-[13px] text-text-primary outline-none focus:border-border-focus transition-colors"
           />
           {!requiresApiKey && (

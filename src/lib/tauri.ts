@@ -404,10 +404,7 @@ export type VoiceIntentKind =
   | 'ask_selection'
   | 'open_question'
 
-export type VoiceOutputPlacement =
-  | 'insert_at_cursor'
-  | 'replace_selection'
-  | 'popup_answer'
+export type VoiceOutputPlacement = 'insert_at_cursor' | 'replace_selection' | 'popup_answer'
 
 export type VoiceExecutionFallbackReason =
   | 'feature_disabled'
